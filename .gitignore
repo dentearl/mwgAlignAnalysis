@@ -1,0 +1,5 @@
+*.pyc
+*.o
+*__init__.py
+analyses/*
+predictions/*
