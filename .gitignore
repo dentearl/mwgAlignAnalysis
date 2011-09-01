@@ -3,3 +3,4 @@
 *__init__.py
 analyses/*
 predictions/*
+truth/*
