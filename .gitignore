@@ -4,3 +4,4 @@
 analyses/*
 predictions/*
 truth/*
+evaluations/bin/*

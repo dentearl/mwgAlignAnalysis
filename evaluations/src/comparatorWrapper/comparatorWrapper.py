@@ -33,35 +33,40 @@ using mafComparator
 ##################################################
 from optparse import OptionParser
 import os
-import libCall
+import lib.libCall as libCall
 
 def initOptions(parser):
    pass
 
 def checkOptions(options, args, parser):
-   if len(args) != 3:
-      parser.error('Args should contain three items: 1) true maf 2) predicted maf 3) output directory')
-   for a in args[:3]:
-      if not os.path.exists(a):
-         parser.error('%s does not exist.' % a)
-   if not os.path.isdir(args[2]):
-      parser.error('%s is not a directory.' % args[2])
-   
+   if len(args) != 5:
+      parser.error('Args should contain three items: 1) true maf '
+                   '2) predicted maf 3) newick tree 4) output directory')
    options.trueMaf = args[0]
    options.predMaf = args[1]
-   options.outDir = args[2]
+   options.tree    = args[2]
+   options.tempDir = args[3]
+   options.outDir  = args[4]
+   for a in args[:2] + args[3:]:
+      if not os.path.exists(a):
+         parser.error('%s does not exist.' % a)
+   for a in args[3:]:
+      if not os.path.isdir(a):
+         parser.error('%s is not a directory.' % a)
 
 def callEvaluation(options):
    cmd = ['mafComparator']
    cmd.append('--mafFile1=%s' % options.trueMaf)
    cmd.append('--mafFile2=%s' % options.predMaf)
    cmd.append('--outputFile=%s' % os.path.join(options.outDir, 'comparator.xml'))
+   cmd.append('--sampleNumber=100')
    libCall.runCommands([cmd], os.curdir)
 
 def main():
-   usage = ('usage: %prog true.maf pred.maf outDir/\n\n'
-            '%prog takes three arguments, the path to the true maf, the path\n'
-            'to the predicted maf and the path to the output directory.')
+   usage = ('usage: %prog true.maf pred.maf \'newick\' tempDir/ outDir/\n\n'
+            '%prog takes five arguments, the path to the true maf, the path\n'
+            'to the predicted maf, the newick tree, the temporary directory\n'
+            'and the path to the output directory.')
    parser = OptionParser(usage)
    initOptions(parser)
    options, args = parser.parse_args()
