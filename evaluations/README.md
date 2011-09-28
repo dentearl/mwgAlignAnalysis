@@ -18,7 +18,7 @@ An _evalution_ may be included in the <code>src/</code> directory in its own sel
 An _evaluation_ may NOT include a hyphen, '-', in its filename. Doing so will gum up the makefile. Use underscores instead.
 
 ## Requirements
-This pipeline requires the following software.
+This pipeline requires the following software. 
 * Will run in a Linux pipeline
 * Python 2.6 &le; version &lt; 3.0
 
