@@ -1,5 +1,5 @@
 bin:=../../bin
-.PHONY:= all clean
+.PHONY:= all test clean
 
 $(bin)/comparatorWrapper.py: comparatorWrapper.py
 	mkdir -p $(dir $@)
@@ -8,6 +8,8 @@ $(bin)/comparatorWrapper.py: comparatorWrapper.py
 	mv $@.tmp $@
 
 all: $(bin)/comparatorWrapper.py
+
+test:
 
 clean:
 	rm -f $(bin)/comparatorWrapper.py

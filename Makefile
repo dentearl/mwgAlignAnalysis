@@ -10,10 +10,13 @@ evals := $(shell for f in ${evalBinDir}/*; do if [ -x $$f ] && [ ! -d $$f ] ; th
 tempDir = $(shell mktemp -d)
 cwd := $(shell pwd)
 
-.PHONY: all clean analyses
+.PHONY: all clean analyses test
 
 all:
 	cd evaluations && make all
+
+test:
+	cd evaluations && make test
 
 analyses: $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),analyses/$e-$p/.done))
 

@@ -8,6 +8,8 @@
 
 
 ## Dependencies
+* A Linux system to run the analysis pipeline
+* Python 2.6 &le; version &lt; 3.0
 * [mafTools] (https://github.com/dentearl/maftools/)
 
 ## Installation
