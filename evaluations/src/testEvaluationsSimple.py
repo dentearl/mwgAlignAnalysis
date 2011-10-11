@@ -1,4 +1,4 @@
-#!/usr/bin/env python26
+#!/usr/bin/env python2.6
 """
 """
 import glob
