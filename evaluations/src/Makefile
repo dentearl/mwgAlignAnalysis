@@ -4,7 +4,7 @@ bin:= ../bin
 # MAKE EDITS IN THIS BOX
 # place the name of your directory at the end of
 # the 'evaluations' list
-evaluations := comparatorWrapper
+evaluations := comparatorWrapper toyExamples
 
 # DO NOT EDIT BELOW THIS LINE
 ####################
@@ -19,7 +19,7 @@ all : ${bin}/lib/libCall.py ${evaluations:%=%.all}
 test : evals.tested ${evaluations:%=%.test}
 
 evals.tested:
-	python2.6 ./testEvaluationsSimple.py --evalsDir ${bin}
+	python2.6 ./test.evaluations.py -v
 
 %.test: 
 	cd $* && make test
