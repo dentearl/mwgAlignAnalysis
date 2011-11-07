@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """ 
-comparatorWrapper.py
+comparatorGenesWrapper.py
 dent earl, dearl (a) soe ucsc edu
-29 July 2011
+1 November 2011
 
 Simple wrapper to perform an evaluation
-using mafComparator
+using mafComparator and bed files for gene 
+annotations
 """
 ##################################################
 # Copyright (C) 2009-2011 by
@@ -38,7 +39,9 @@ import os
 import sys
 
 def callEvaluation(options):
-   cmd = libComparator.basicCommand('comparator.xml', options)
+   cmd = libComparator.basicCommand('comparatorGenes.xml', options)
+   geneAnnots = libComparator.getAnnots(['CDS', 'UTR', 'NXE'], options)
+   cmd.append('--bedFiles=%s' % ','.join(geneAnnots))
    libCall.runCommands([cmd], os.curdir)
 
 def main():
