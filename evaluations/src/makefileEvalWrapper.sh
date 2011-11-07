@@ -34,12 +34,13 @@ if [ ! -f $registry ]; then
 fi
 
 eval=$(readlink -f evaluations/bin/$(dirname $evalAndPred | perl -ple 's/.*\/(.*?)\-.*/$1/')*)
-pred=$location/$(dirname $evalAndPred | perl -ple 's/.*\-(.*)/$1/').maf
+pred=$location/predictions/$(dirname $evalAndPred | perl -ple 's/.*\-(.*)/$1/').maf
 
 ##############################
 mkdir -p $(dirname $evalAndPred)
 
 # call the evaluation
+echo $eval $location $pred $registry $tmpDir $outDir
 $eval $location $pred $registry $tmpDir $outDir
 
 rm -rf $tempDir
