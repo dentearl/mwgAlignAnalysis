@@ -12,7 +12,8 @@ export SHELLOPTS = pipefail
 # 'make analyses set=testSet location=../testPackage'
 #
 ####################
-predictionsDir := ${location}/predictions
+dirLocation := ${location:%/=%}
+predictionsDir := ${dirLocation}/predictions
 predictions := $(wildcard ${predictionsDir}/*.maf)
 evalBinDir := evaluations/bin
 evals := $(shell find ${evalBinDir}/ -perm 755 -type f | grep -v makefileEvalWrapper)
@@ -28,18 +29,19 @@ all:
 test:
 	cd evaluations && make test
 
-analyses: $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),${location}/analyses/$e-$p/.done))
-	@if [ -z ${location} ]; then echo "Error, specify variable 'location'" && exit 1; fi
-	@if [ ! -e ${location} ]; then echo "Error, 'location=${location}' does not exist" && exit 1; fi
-	@if [ ! -d ${location} ]; then echo "Error, 'location=${location}' is not a directory" && exit 1; fi
+analyses: $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),${dirLocation}/analyses/$e-$p/.done))
+	@if [ -z ${dirLocation} ]; then echo "Error, specify variable 'location'" && exit 1; fi
+	@if [ ! -e ${dirLocation} ]; then echo "Error, 'location=${dirLocation}' does not exist" && exit 1; fi
+	@if [ ! -d ${dirLocation} ]; then echo "Error, 'location=${dirLocation}' is not a directory" && exit 1; fi
 
 clean:
 	cd evaluations && make clean
 
-${location}/analyses/%:
+${dirLocation}/analyses/%:
+	@mkdir -p ${dirLocation}/analyses
 	${evalBinDir}/makefileEvalWrapper.sh \
 		$@ \
-		${location} \
+		${dirLocation}/ \
 		registries/${set}.reg.tab \
 		$(realpath ${tempDir}) \
 		${cwd}/$$(dirname $@)
