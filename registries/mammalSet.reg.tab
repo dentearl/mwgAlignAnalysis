@@ -1,16 +1,16 @@
-# testSet registry file v1.0 
-# 19 October 2011
+# mammalSet registry file v1.0 
+# 16 November 2011
 # 
 # all paths are relative to the root of the 
 # package set directory.
 # Key	Value
 ####################
-evaluations	comparatorWrapper.py, recorder.sh, wordCountWrapper.sh, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py
+evaluations	comparatorWrapper.py, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py
 truthMRCA	truths/ancestor.maf
 truthROOT	truths/burnin.maf
 species	simCow, simDog, simHuman, simMouse, simRat
 tree	((simCow:0.18908,simDog:0.16303)sCow-sDog:0.032898,(simHuman:0.144018,(simMouse:0.084509,simRat:0.091589)sMouse-sRat:0.271974)sH-sM-sR:0.020593);
-burninDistance	0.2
+burninDistance	1.0
 ####################
 # The naming convention for sequences is:
 #     SPECIES.trf.repmask.fa 
@@ -34,6 +34,7 @@ sequences	sequences/simCow.trf.repmask.fa, sequences/simDog.trf.repmask.fa, sequ
 # NGE 	non-geneic conserved region
 # island	CpG islands
 # tandem	tandem repeats as discovered by trf
-# repMask	repetitive regions as discovered by RepeatMasker
+# repmask	repetitive regions as discovered by RepeatMasker
 ####################
 annotations	annotations/simCow.annots.all.bed, annotations/simCow.annots.complement.bed, annotations/simCow.annots.repeats.bed, annotations/simCow.annots.genes.bed, annotations/simCow.annots.CDS.bed, annotations/simCow.annots.NGE.bed, annotations/simCow.annots.NXE.bed, annotations/simCow.annots.UTR.bed, annotations/simCow.annots.island.bed, annotations/simCow.annots.repMask.bed, annotations/simCow.annots.tandem.bed, annotations/simDog.annots.all.bed, annotations/simDog.annots.complement.bed, annotations/simDog.annots.repeats.bed, annotations/simDog.annots.genes.bed, annotations/simDog.annots.CDS.bed, annotations/simDog.annots.NGE.bed, annotations/simDog.annots.NXE.bed, annotations/simDog.annots.UTR.bed, annotations/simDog.annots.island.bed, annotations/simDog.annots.repMask.bed, annotations/simDog.annots.tandem.bed, annotations/simHuman.annots.all.bed, annotations/simHuman.annots.complement.bed, annotations/simHuman.annots.repeats.bed, annotations/simHuman.annots.genes.bed, annotations/simHuman.annots.CDS.bed, annotations/simHuman.annots.NGE.bed, annotations/simHuman.annots.NXE.bed, annotations/simHuman.annots.UTR.bed, annotations/simHuman.annots.island.bed, annotations/simHuman.annots.repMask.bed, annotations/simHuman.annots.tandem.bed, annotations/simMouse.annots.all.bed, annotations/simMouse.annots.complement.bed, annotations/simMouse.annots.repeats.bed, annotations/simMouse.annots.genes.bed, annotations/simMouse.annots.CDS.bed, annotations/simMouse.annots.NGE.bed, annotations/simMouse.annots.NXE.bed, annotations/simMouse.annots.UTR.bed, annotations/simMouse.annots.island.bed, annotations/simMouse.annots.repMask.bed, annotations/simMouse.annots.tandem.bed, annotations/simRat.annots.all.bed, annotations/simRat.annots.complement.bed, annotations/simRat.annots.repeats.bed, annotations/simRat.annots.genes.bed, annotations/simRat.annots.CDS.bed, annotations/simRat.annots.NGE.bed, annotations/simRat.annots.NXE.bed, annotations/simRat.annots.UTR.bed, annotations/simRat.annots.island.bed, annotations/simRat.annots.repMask.bed, annotations/simRat.annots.tandem.bed
+
