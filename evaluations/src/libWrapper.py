@@ -1,3 +1,5 @@
+""" common functions used by python wrappers for alignathon
+"""
 ##################################################
 # Copyright (C) 2009-2011 by
 # Dent Earl (dearl@soe.ucsc.edu, dentearl@gmail.com)
@@ -22,12 +24,60 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 ##################################################
+import os
+import subprocess
+
+def checkOptions(options, args, parser):
+   if len(args) != 5:
+      parser.error('Args should contain five items: 1) location of package directory '
+                   '2) predicted maf 3) registry file 4) temporary directory 5) output directory')
+   options.location= args[0]
+   options.predMaf = args[1]
+   options.registry= args[2]
+   options.tempDir = args[3]
+   options.outDir  = args[4]
+   for a in args:
+      if not os.path.exists(a):
+         parser.error('%s does not exist.' % a)
+   for a in [args[0]] + args[3:]:
+      if not os.path.isdir(a):
+         parser.error('%s is not a directory.' % a)
+
+def parseRegistry(options):
+   f = open(options.registry, 'r')
+   options.reg = {}
+   for line in f:
+      line = line.strip()
+      if line.startswith('#'):
+         continue
+      try:
+         key, val = line.split('\t')
+      except ValueError:
+         sys.stderr.write('Warning: Malformed registry file.\n')
+         continue
+      if key in options.reg:
+         raise RuntimeError('Multiple copies of one key "%s" found in registry' % key)
+      if key not in ['tree']:
+         options.reg[key] = val.split(',')
+         for i, v in enumerate(options.reg[key]):
+            options.reg[key][i] = v.strip()
+      else:
+         # for some k, v pairs the v should not be a list.
+         options.reg[key] = val.strip()
+   for e in options.reg['evaluations']:
+       if e != e.replace(' ', ''):
+           raise RuntimeError('Malformed evaluations line: items should be comma separated: %s' % e)
+   for elm in ['sequences', 'annotations']:
+       if elm in options.reg:
+           for s in options.reg[elm]:
+               if not os.path.exists(s):
+                   raise RuntimeError('%s file mentioned in registry not found: %s' % (elm, s))
+
 def runCommands(cmds, localTempDir, inPipes = [], outPipes = [], mode = 's', debug = False):
     """ runCommands is a wrapper function for the parallel and serial
     versions of runCommands(). mode may either be s or p.
     """
-    from libCall import runCommandsP, runCommandsS
-    import os
+    # from libCall import runCommandsP, runCommandsS
 
     if not os.path.exists(localTempDir):
         raise ValueError('localTempDir "%s" does not exist.' % localTempDir)
@@ -66,9 +116,7 @@ def runCommandsP(cmds, localTempDir, inPipes = [], outPipes = [], debug = False)
     """ runCommandsP uses the subprocess module
     to issue parallel processes from the cmds list.
     """
-    import os
-    import subprocess
-    from libCall import handleReturnCode
+    # from libCall import handleReturnCode
     procs = []
     i = -1
     for c in cmds:
@@ -81,7 +129,7 @@ def runCommandsP(cmds, localTempDir, inPipes = [], outPipes = [], debug = False)
             sout = None
         else:
             sout = subprocess.PIPE
-        # logger.info('Executing parallel %s < %s > %s' % (' '.join(c), inPipes[i], outPipes[i]))
+        # logger.info('Executing parallel run %s < %s > %s' % (' '.join(c), inPipes[i], outPipes[i]))
         procs.append(subprocess.Popen(c, cwd = localTempDir, stdin = sin, stdout = sout))
     i = -1
     for p in procs:
@@ -105,9 +153,7 @@ def runCommandsS(cmds, localTempDir, inPipes=[], outPipes=[], debug = False):
     """ runCommandsS uses the subprocess module
     to issue serial processes from the cmds list.
     """
-    import os
-    import subprocess
-    from libCall import handleReturnCode
+    # from libCall import handleReturnCode
     i = -1
     for c in cmds:
         i += 1
@@ -119,7 +165,7 @@ def runCommandsS(cmds, localTempDir, inPipes=[], outPipes=[], debug = False):
             sout = None
         else:
             sout = subprocess.PIPE
-        # logger.info('Executing serial %s < %s > %s' % (' '.join(c), inPipes[i], outPipes[i]))
+        # logger.info('Executing serial run %s < %s > %s' % (' '.join(c), inPipes[i], outPipes[i]))
         p = subprocess.Popen(c, cwd = localTempDir, stdin = sin, stdout = sout)
             
         if inPipes[i] is None:

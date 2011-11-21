@@ -4,14 +4,15 @@ bin:= ../bin
 # MAKE EDITS IN THIS BOX
 # place the name of your directory at the end of
 # the 'evaluations' list
-evaluations := comparatorWrapper toyExamples
+evaluations := comparatorWrapper indelDistributionWrapper toyExamples
+libraries := libWrapper.py
 
 # DO NOT EDIT BELOW THIS LINE
 ####################
 .PHONY = all test clean %.all %.test clean.%
 evalBins:= $(foreach f,$(shell find ${bin} -type f -perm -o+x), all.$(notdir $f))
 
-all : ${bin}/lib/libCall.py ${evaluations:%=%.all}
+all : ${libraries:%=${bin}/lib/%} ${evaluations:%=%.all}
 
 %.all: %
 	cd $* && make all
@@ -24,7 +25,7 @@ evals.tested:
 %.test: 
 	cd $* && make test
 
-$(bin)/lib/libCall.py: libCall.py
+$(bin)/lib/%: %
 	mkdir -p $(dir $@)
 	touch $(dir $@)/__init__.py
 	cp $< $@.tmp

@@ -34,13 +34,14 @@ annotations
 ##################################################
 import lib.libCall as libCall
 import lib.libComparator as libComparator
+import lib.libWrapper as libWrapper
 from optparse import OptionParser
 import os
 import sys
 
 def callEvaluation(options):
    cmd = libComparator.basicCommand('comparatorGenes.xml', options)
-   geneAnnots = libComparator.getAnnots(['CDS', 'UTR', 'NXE'], options)
+   geneAnnots = libComparator.getAnnots('genes', options)
    cmd.append('--bedFiles=%s' % ','.join(geneAnnots))
    libCall.runCommands([cmd], os.curdir)
 
@@ -52,9 +53,9 @@ def main():
    parser = OptionParser(usage)
    libComparator.initOptions(parser)
    options, args = parser.parse_args()
-   libComparator.checkOptions(options, args, parser)
+   libWrapper.checkOptions(options, args, parser)
    
-   libComparator.parseRegistry(options)
+   libWrapper.parseRegistry(options)
    if os.path.basename(sys.argv[0]) not in options.reg['evaluations']:
       sys.exit(0)
    

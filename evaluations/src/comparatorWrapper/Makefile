@@ -1,7 +1,8 @@
 bin := ../../bin
 .PHONY := all test clean
 
-comparators := comparatorWrapper.py comparatorGenesWrapper.py comparatorRepeatsWrapper.py comparatorNeutralWrapper.py
+wrappers := comparatorWrapper.py comparatorGenesWrapper.py comparatorRepeatsWrapper.py comparatorNeutralWrapper.py
+binWrappers := $(foreach f,${wrappers},${bin}/$f)
 
 $(bin)/%: %
 	mkdir -p $(dir $@)
@@ -15,9 +16,9 @@ $(bin)/lib/libComparator.py: libComparator.py
 	cp $< $@.tmp
 	mv $@.tmp $@
 
-all: ${comparators:%=${bin}/%} ${bin}/lib/libComparator.py
+all: ${binWrappers} ${bin}/lib/libComparator.py
 
 test:
 
 clean:
-	rm -f $(bin)/comparatorWrapper.py
+	rm -f ${binWrappers}
