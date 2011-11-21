@@ -1,4 +1,10 @@
-""" common functions used by python wrappers for alignathon
+""" libWrapper.py
+dent earl, dearl (a) soe ucsc edu
+
+November 2011
+
+Common functions used by python wrappers for alignathon
+
 """
 ##################################################
 # Copyright (C) 2009-2011 by
