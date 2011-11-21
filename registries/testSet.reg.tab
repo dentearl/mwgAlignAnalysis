@@ -5,7 +5,7 @@
 # package set directory.
 # Key	Value
 ####################
-evaluations	comparatorWrapper.py, recorder.sh, wordCountWrapper.sh, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py
+evaluations	comparatorWrapper.py, recorder.sh, wordCountWrapper.sh, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py, indelDistributionWrapper.py
 truthMRCA	truths/ancestor.maf
 truthROOT	truths/burnin.maf
 species	simCow, simDog, simHuman, simMouse, simRat
