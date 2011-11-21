@@ -1,0 +1,40 @@
+# drosophila registry file v1.0 
+# 21 November 2011
+# 
+# all paths are relative to the root of the 
+# package set directory.
+# Key	Value
+####################
+evaluations	indelDistributionWrapper.py
+species	dm, droSim1, droSec1, droYak, droEre2, droAna3, dp4, droPer1, droWil1, droVir3, droMoj3, droGri2, anaGam1, apiMel3, triCas2
+tree	(((((((((dm3:0.059235,(droSim1:0.039799,droSec1:0.039025):0.035598):0.041349,(droYak2:0.104304,droEre2:0.106715):0.054017):0.119983,droAna3:0.377089):0.071962,(dp4:0.028079,droPer1:0.031175):0.369228):0.060569,droWil1:0.536488):0.019784,((droVir3:0.195542,droMoj3:0.254453):0.073077,droGri2:0.290773):0.336972):0.180643,anoGam1:0.783559):0.174661,apiMel3:0.670401):0.382291,triCas2:0.382291);
+####################
+# The naming convention for sequences is:
+#     SPECIES.fa.masked 
+# and indicates that the sequence has been 
+# soft masked by UCSC.
+# species files can be constructed by downloading
+# the chromFa.tar.gz for each species from the 
+# Golden Path (http://hgdownload-test.cse.ucsc.edu/goldenPath/)
+# and cating together the chromosome files.
+####################
+sequences	sequences/dm3.fa, sequences/droSim1.fa, sequences/droSec1.fa, sequences/droYak.fa, sequences/droEre2.fa, sequences/droAna3.fa, sequences/dp4.fa, sequences/droPer1.fa, sequences/droWil1.fa, sequences/droVir3.fa, sequences/droMoj3.fa, sequences/droGri2.fa, sequences/anaGam1.fa, sequences/apiMel3.fa, sequences/triCas2.fa
+####################
+# the name convention for annotations is:
+#     SPECIES.annots.TYPE.bed
+# The different types are:
+#
+# all    the union of all the types
+# complement the complement of the union, using chrom sizes
+# genes  the union of CDS, UTR and NXE
+# repeats the union of tandem and repMask
+#
+# CDS 	coding sequence
+# UTR 	untranslated region
+# NXE 	non-exonic conserved region
+# NGE 	non-geneic conserved region
+# island	CpG islands
+# tandem	tandem repeats as discovered by trf
+# repMask	repetitive regions as discovered by RepeatMasker
+####################
+
