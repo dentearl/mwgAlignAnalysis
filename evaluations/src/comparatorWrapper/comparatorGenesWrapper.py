@@ -32,7 +32,6 @@ annotations
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 ##################################################
-import lib.libCall as libCall
 import lib.libComparator as libComparator
 import lib.libWrapper as libWrapper
 from optparse import OptionParser
@@ -43,7 +42,8 @@ def callEvaluation(options):
    cmd = libComparator.basicCommand('comparatorGenes.xml', options)
    geneAnnots = libComparator.getAnnots('genes', options)
    cmd.append('--bedFiles=%s' % ','.join(geneAnnots))
-   libCall.runCommands([cmd], os.curdir)
+   libWrapper.runCommands([cmd], os.curdir)
+   libWrapper.recordCommand(cmd, os.path.join(options.outDir, 'command.txt'))
 
 def main():
    usage = ('usage: %prog location/ pred.maf set.reg.tab tempDir/ outDir/\n\n'

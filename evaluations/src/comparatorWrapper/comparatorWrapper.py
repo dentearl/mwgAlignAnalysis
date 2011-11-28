@@ -31,7 +31,6 @@ using mafComparator
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 ##################################################
-import lib.libCall as libCall
 import lib.libComparator as libComparator
 import lib.libWrapper as libWrapper
 from optparse import OptionParser
@@ -40,7 +39,8 @@ import sys
 
 def callEvaluation(options):
    cmd = libComparator.basicCommand('comparator.xml', options)
-   libCall.runCommands([cmd], os.curdir)
+   libWrapper.runCommands([cmd], os.curdir)
+   libWrapper.recordCommand(cmd, os.path.join(options.outDir, 'command.txt'))
 
 def main():
    usage = ('usage: %prog location/ pred.maf set.reg.tab tempDir/ outDir/\n\n'

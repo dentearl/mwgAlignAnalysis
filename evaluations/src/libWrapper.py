@@ -76,7 +76,7 @@ def parseRegistry(options):
    for elm in ['sequences', 'annotations']:
        if elm in options.reg:
            for s in options.reg[elm]:
-               if not os.path.exists(s):
+               if not os.path.exists(os.path.join(options.location, s)):
                    raise RuntimeError('%s file mentioned in registry not found: %s' % (elm, s))
 
 def runCommands(cmds, localTempDir, inPipes = [], outPipes = [], mode = 's', debug = False):
@@ -206,3 +206,10 @@ def handleReturnCode(retcode, cmd):
         else:
             raise RuntimeError('Experienced an error while trying to execute: '
                                '%s retcode:%d' %(' '.join(cmd), retcode))
+
+def recordCommand(command, filename):
+   """ records the given command to the given filename. nothing special
+   """
+   f = open(filename, 'w')
+   f.write('%s\n' % ' '.join(command))
+   f.close()
