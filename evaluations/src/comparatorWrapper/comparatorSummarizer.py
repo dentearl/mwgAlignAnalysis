@@ -160,26 +160,37 @@ def reportPairs(pairs, options):
       p.calcPrecision()
       if p.precision == -1.0:
          precStr = 'nan'
+         fStr = 'nan'
       else:
          precStr = '%.5f' % p.precision
+         fStr = '%.5f' % (2 * ((p.precision * p.recall)/
+                               (p.precision + p.recall)))
       if p.precisionRegion == -1.0:
          precRegStr = 'nan'
+         fRegStr = 'nan'
       else:
          precRegStr = '%.5f' % p.precisionRegion
+         fRegStr = '%.5f' % (2 * ((p.precisionRegion * p.recallRegion)/
+                                  (p.precisionRegion + p.recallRegion)))
       if p.precisionRegionOutside == -1.0:
          precRegOutStr = 'nan'
+         fRegOutStr = 'nan'
       else:
          precRegOutStr = '%.5f' % p.precisionRegionOutside
+         fRegOutStr = '%.5f' % (2 * ((p.precisionRegionOutside * p.recallRegionOutside)/
+                                     (p.precisionRegionOutside + p.recallRegionOutside)))
       if not isRegionMode(pairs):
-         print('%35s %10s %10.5f %9d %9d %9d' % 
-               (p.niceNames, precStr, p.recall, 
+         print('%35s %10s %10.5f %10s %9d %9d %9d' % 
+               (p.niceNames, precStr, p.recall, fStr,
                 p.truePos, p.falsePos, p.falseNeg))
       else:
-         print('%35s %10s %10.5f %9d %9d %9d' % 
-               ('%s inside' % p.niceNames, precRegStr, p.recallRegion, 
+         print('%35s %10s %10.5f %10s %9d %9d %9d' % 
+               ('%s inside' % p.niceNames, precRegStr, p.recallRegion,
+                fRegStr,
                 p.truePosRegion, p.falsePosRegion, p.falseNegRegion))
-         print('%35s %10s %10.5f %9d %9d %9d' % 
-               ('%s outside' % p.niceNames, precRegOutStr, p.recallRegionOutside, 
+         print('%35s %10s %10.5f %10s %9d %9d %9d' % 
+               ('%s outside' % p.niceNames, precRegOutStr, p.recallRegionOutside,
+                fRegOutStr,
                 p.truePosRegionOutside, p.falsePosRegionOutside, p.falseNegRegionOutside))
 
 def summarize(options):
@@ -218,21 +229,32 @@ def summarize(options):
    precisionSelf = float(truePosSelf) / (truePosSelf + falsePosSelf)
    recallSelf = float(truePosSelf) / (truePosSelf + falseNegSelf)
 
-   print '%35s %10s %10s %9s %9s %9s' % ('', 'Precision', 'Recall', 'TP', 'FP', 'FN')
+   print '%35s %10s %10s %10s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP', 'FP', 'FN')
    if isRegionMode(pairs):
-      print '%35s %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self) inside', precision, recall, 
-                                                truePos, falsePos, falseNeg)
-      print '%35s %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self) outside', precisionOut, recallOut, 
-                                                truePosOut, falsePosOut, falseNegOut)
-      print '%35s %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self) inside', precisionSelf, recallSelf, 
-                                                truePosSelf, falsePosSelf, falseNegSelf)
-      print '%35s %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self) outside', precisionSelfOut, recallSelfOut, 
-                                                truePosSelfOut, falsePosSelfOut, falseNegSelfOut)
+      print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self) inside', precision, recall, 
+                                                       2 * (precision * recall) / (precision + recall),
+                                                       truePos, falsePos, falseNeg)
+      print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self) outside', precisionOut, recallOut, 
+                                                       2 * ((precisionOut * recallOut) / 
+                                                            (precisionOut + recallOut)),
+                                                       truePosOut, falsePosOut, falseNegOut)
+      print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self) inside', precisionSelf, recallSelf, 
+                                                       2 * ((precisionSelf * recallSelf) / 
+                                                            (precisionSelf + recallSelf)),
+                                                       truePosSelf, falsePosSelf, falseNegSelf)
+      print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self) outside', precisionSelfOut, 
+                                                       recallSelfOut,
+                                                       2 * ((precisionSelfOut * recallSelfOut) / 
+                                                            (precisionSelfOut + recallSelfOut)),
+                                                       truePosSelfOut, falsePosSelfOut, falseNegSelfOut)
    else:
-      print '%35s %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self)', precision, recall, 
-                                                truePos, falsePos, falseNeg)
-      print '%35s %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self)', precisionSelf, recallSelf, 
-                                                truePosSelf, falsePosSelf, falseNegSelf)
+      print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self)', precision, recall, 
+                                                       2 * (precision * recall) / (precision + recall),
+                                                       truePos, falsePos, falseNeg)
+      print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self)', precisionSelf, recallSelf, 
+                                                       2 * ((precisionSelf * recallSelf) / 
+                                                            (precisionSelf + recallSelf)),
+                                                       truePosSelf, falsePosSelf, falseNegSelf)
    reportPairs(pairs, options)
 
 def isRegionMode(pairs):
