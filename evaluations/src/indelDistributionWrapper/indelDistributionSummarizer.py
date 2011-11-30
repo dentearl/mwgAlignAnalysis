@@ -210,11 +210,10 @@ def summarizeGaps(options):
     gapsText = root.find('gaps').text
     gaps = map(int, gapsText.split(','))
 
-    sevenNumSum(gaps)
+    sevenNumSummary(gaps)
     stem(gaps)
 
-def sevenNumSum(gaps):
-    
+def sevenNumSummary(gaps):
     values = [prettyInt(len(gaps)), prettyInt(npmin(gaps)), scoreatpercentile(gaps, 25), npmedian(gaps), 
               npmean(gaps), scoreatpercentile(gaps, 75), prettyInt(npmax(gaps)), npstd(gaps)]
     labels = ['n', 'Min.', '1st Qu.', 'Median', 'Mean', '3rd Qu.', 'Max.', 'Stdev.']
@@ -230,7 +229,6 @@ def sevenNumSum(gaps):
             s2 =  ' ' * (len(l) - len(s))+ s + '  ' + s2
     print ' '*3 + s1
     print ' '*3 + s2
-   
 
 def summarizeCoverage(options):
     targets = {}
