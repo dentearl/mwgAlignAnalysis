@@ -4,10 +4,12 @@ util := ../../util
 
 wrappers := indelDistributionWrapper.py
 utilities := indelDistributionSummarizer.py
+utilLibs := libStem.py
 binWrappers := $(foreach f,${wrappers},${bin}/$f)
 utilUtilities := $(foreach f,${utilities},${util}/$f)
+utilLibUtilities :=$(foreach f,${utilLibs},${util}/lib/$f)
 
-all: ${binWrappers} ${utilUtilities}
+all: ${binWrappers} ${utilUtilities} ${utilLibUtilities}
 
 test:
 
@@ -22,6 +24,14 @@ ${bin}/%: %
 
 ${util}/%: %
 	mkdir -p $(dir $@)
+	cp $< $@.tmp
+	chmod 755 $@.tmp
+	mv $@.tmp $@
+
+${util}/lib/%: %
+	mkdir -p $(dir $@)
+	touch ${util}/__init__.py
+	touch ${util}/lib/__init__.py
 	cp $< $@.tmp
 	chmod 755 $@.tmp
 	mv $@.tmp $@
