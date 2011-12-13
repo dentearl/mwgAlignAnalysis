@@ -29,7 +29,11 @@ all:
 test:
 	cd evaluations && make test
 
-analyses: $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),${dirLocation}/analyses/$e-$p/.done))
+registries/%: registries/%.template
+	cp $^ $@.tmp
+	mv $@.tmp $@
+
+analyses: registries/${set}.reg.tab $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),${dirLocation}/analyses/$e-$p/.done))
 	@if [ -z ${dirLocation} ]; then echo "Error, specify variable 'location'" && exit 1; fi
 	@if [ ! -e ${dirLocation} ]; then echo "Error, 'location=${dirLocation}' does not exist" && exit 1; fi
 	@if [ ! -d ${dirLocation} ]; then echo "Error, 'location=${dirLocation}' is not a directory" && exit 1; fi

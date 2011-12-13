@@ -6,3 +6,4 @@ predictions/*
 truth/*
 evaluations/bin/*
 evaluations/util/*
+registries/*.reg.tab
