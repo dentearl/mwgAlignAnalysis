@@ -41,7 +41,7 @@ analyses: registries/${set}.reg.tab $(foreach e,$(basename $(notdir ${evals})),$
 clean:
 	cd evaluations && make clean
 
-${dirLocation}/analyses/%:
+${dirLocation}/analyses/%: registries/${set}.reg.tab
 	@mkdir -p ${dirLocation}/analyses
 	${evalBinDir}/makefileEvalWrapper.sh \
 		$@ \
