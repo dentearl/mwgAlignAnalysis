@@ -15,7 +15,7 @@ The [Alignathon] (http://compbio.soe.ucsc.edu/alignathon/) is a collaborative pr
 ## Installation
 1. Install dependencies.
 2. <code>$ git@github.com:dentearl/mwgAlignAnalysis.git</code>
-3. <code>$ make</code>
+3. <code>$ cd mwgAlignAnalysis && make</code>
 
 ## Use
 After downloading a package from the [Alignathon website] (http://compbio.soe.ucsc.edu/alignathon/), performing an alignment and placing the predicted maf in <code>package/predictions/</code>, an analysis can be run using
