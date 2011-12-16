@@ -5,13 +5,13 @@ Dent Earl
 ## Introduction
 An _evaluation_ in this document refers to a program (or wrapper) that that takes five inputs in the following order: 
 
-1. the path to the true maf
+1. the path to the package directory
 2. the path to the predicted maf
-3. the newick tree for the simulation
+3. the path to the registry file
 4. the path to a temporary directory
 5. the path to the directory where output may be written
 
-I.e. <code>myEval path/to/truth.maf path/to/prediction.maf path/to/diretory/ </code>
+I.e. <code>myEval path/to/package/ path/to/prediction.maf path/to/registry/registry.reg.tab /path/to/temp /path/to/out </code>
 
 The _evaluation_ will be passed these arguments by the analysis Makefile. The output directory will be specific to one prediction and evaluation pair. I.e. if there are four prediction mafs and two evaluations then eight different directories will be created. If you have multiple parameters to pass to a custom _evaluation_ then you would do that through a wrapper that would accept the three arguments and then perform the multi parameter assessments.
 
