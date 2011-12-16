@@ -1,5 +1,5 @@
-# alignAnalysis
-(c) 2011-12 The Authors, see LICENSE.txt for details.
+# mwgAlignAnalysis
+(c) 2011 The Authors, see LICENSE.txt for details.
 
 ## Authors
 [Dent Earl] (https://github.com/dentearl/)
