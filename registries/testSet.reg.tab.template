@@ -13,11 +13,11 @@ tree	((simCow:0.18908,simDog:0.16303)sCow-sDog:0.032898,(simHuman:0.144018,(simM
 burninDistance	0.2
 ####################
 # The naming convention for sequences is:
-#     SPECIES.trf.repmask.fa 
-# and indicates that the sequence has been 
+#     SPECIES.fa 
+# the sequence has been 
 # soft masked by both trf and by RepeatMasker
 ####################
-sequences	sequences/simCow.trf.repmask.fa, sequences/simDog.trf.repmask.fa, sequences/simHuman.trf.repmask.fa, sequences/simMouse.trf.repmask.fa, sequences/simRat.trf.repmask.fa
+sequences	sequences/simCow.fa, sequences/simDog.fa, sequences/simHuman.fa, sequences/simMouse.fa, sequences/simRat.fa
 ####################
 # the name convention for annotations is:
 #     SPECIES.annots.TYPE.bed

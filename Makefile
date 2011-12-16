@@ -9,7 +9,7 @@ export SHELLOPTS = pipefail
 # as in 'make all', to test the evaluations as
 # in 'make test', and to run evaluations on a set
 # of predictions for a particular test set as in
-# 'make analyses set=testSet location=../testPackage'
+# 'make analysis set=testSet location=../testPackage'
 #
 ####################
 dirLocation := ${location:%/=%}
@@ -21,7 +21,7 @@ tempDir = $(shell mktemp -d)
 cwd := $(shell pwd)
 ####################
 
-.PHONY: all clean analyses test
+.PHONY: all clean analysis test
 
 all:
 	cd evaluations && make all
@@ -33,7 +33,7 @@ registries/%: registries/%.template
 	cp $^ $@.tmp
 	mv $@.tmp $@
 
-analyses: registries/${set}.reg.tab $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),${dirLocation}/analyses/$e-$p/.done))
+analysis: registries/${set}.reg.tab $(foreach e,$(basename $(notdir ${evals})),$(foreach p,$(basename $(notdir ${predictions})),${dirLocation}/analysis/$e-$p/.done))
 	@if [ -z ${dirLocation} ]; then echo "Error, specify variable 'location'" && exit 1; fi
 	@if [ ! -e ${dirLocation} ]; then echo "Error, 'location=${dirLocation}' does not exist" && exit 1; fi
 	@if [ ! -d ${dirLocation} ]; then echo "Error, 'location=${dirLocation}' is not a directory" && exit 1; fi
@@ -41,8 +41,8 @@ analyses: registries/${set}.reg.tab $(foreach e,$(basename $(notdir ${evals})),$
 clean:
 	cd evaluations && make clean
 
-${dirLocation}/analyses/%: registries/${set}.reg.tab
-	@mkdir -p ${dirLocation}/analyses
+${dirLocation}/analysis/%: registries/${set}.reg.tab
+	@mkdir -p ${dirLocation}/analysis
 	${evalBinDir}/makefileEvalWrapper.sh \
 		$@ \
 		${dirLocation}/ \

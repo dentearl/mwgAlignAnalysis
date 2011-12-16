@@ -14,9 +14,22 @@ tree	(((((((((dm3:0.059235,(droSim1:0.039799,droSec1:0.039025):0.035598):0.04134
 # and indicates that the sequence has been 
 # soft masked by UCSC.
 # species files can be constructed by downloading
-# the chromFa.tar.gz for each species from the 
+# the .fa.gz file and expanding, or the scaffoldsFa.gz
+# or chromFa.tar.gz (depending on what is available) for each species from the 
 # Golden Path (http://hgdownload-test.cse.ucsc.edu/goldenPath/)
 # and cating together the chromosome files.
+# droAna3 http://hgdownload.cse.ucsc.edu/goldenPath/droAna3/bigZips/droAna3.fa.gz
+# droEre2 http://hgdownload.cse.ucsc.edu/goldenPath/droEre2/bigZips/droEre2.fa.gz
+# droGri2 http://hgdownload.cse.ucsc.edu/goldenPath/droGri2/bigZips/droGri2.fa.gz
+# dm3     http://hgdownload.cse.ucsc.edu/goldenPath/dm3/bigZips/chromFa.tar.gz
+# droMoj3 http://hgdownload.cse.ucsc.edu/goldenPath/droMoj3/bigZips/droMoj3.fa.gz
+# droPer1 http://hgdownload.cse.ucsc.edu/goldenPath/droPer1/bigZips/scaffoldFa.gz
+# dp4     http://hgdownload.cse.ucsc.edu/goldenPath/dp4/bigZips/dp4.fa.gz
+# droSec1 http://hgdownload.cse.ucsc.edu/goldenPath/droSec1/bigZips/scaffoldFa.gz
+# droSim1 http://hgdownload.cse.ucsc.edu/goldenPath/droSim1/bigZips/chromFa.tar.gz
+# droVir3 http://hgdownload.cse.ucsc.edu/goldenPath/droVir3/bigZips/droVir3.fa.gz
+# droWil1 http://hgdownload.cse.ucsc.edu/goldenPath/droWil1/bigZips/droWil1.fa.gz
+# droYak2 http://hgdownload.cse.ucsc.edu/goldenPath/droYak2/bigZips/chromFa.tar.gz
 ####################
 sequences	sequences/dm3.fa, sequences/droSim1.fa, sequences/droSec1.fa, sequences/droYak.fa, sequences/droEre2.fa, sequences/droAna3.fa, sequences/dp4.fa, sequences/droPer1.fa, sequences/droWil1.fa, sequences/droVir3.fa, sequences/droMoj3.fa, sequences/droGri2.fa, sequences/anaGam1.fa, sequences/apiMel3.fa, sequences/triCas2.fa
 ####################

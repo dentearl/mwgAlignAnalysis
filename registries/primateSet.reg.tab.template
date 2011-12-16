@@ -13,11 +13,11 @@ tree	((simGorilla:0.008825,(simHuman:0.0067,simChimp:0.006667)sHuman-sChimp:0.00
 burninDistance	1.0
 ####################
 # The naming convention for sequences is:
-#     SPECIES.trf.repmask.fa 
-# and indicates that the sequence has been 
+#     SPECIES.fa 
+# the sequences have been 
 # soft masked by both trf and by RepeatMasker
 ####################
-sequences	sequences/simChimp.trf.repmask.fa, sequences/simGorilla.trf.repmask.fa, sequences/simHuman.trf.repmask.fa, sequences/simOrang.trf.repmask.fa
+sequences	sequences/simChimp.fa, sequences/simGorilla.fa, sequences/simHuman.fa, sequences/simOrang.fa
 ####################
 # the name convention for annotations is:
 #     SPECIES.annots.TYPE.bed
