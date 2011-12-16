@@ -1,4 +1,4 @@
-# alignAnalysis
+# mwgAlignAnalysis
 (c) 2011 The Authors, see LICENSE.txt for details.
 
 ## Authors
