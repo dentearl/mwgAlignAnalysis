@@ -3,7 +3,7 @@
 Dent Earl
 
 ## Introduction
-An _evaluation_ in this document refers to a program (or wrapper) that that takes three inputs in the following order: 
+An _evaluation_ in this document refers to a program (or wrapper) that that takes five inputs in the following order: 
 
 1. the path to the true maf
 2. the path to the predicted maf
