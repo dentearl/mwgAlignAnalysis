@@ -32,6 +32,7 @@ for use with alignathon competetition.
 # THE SOFTWARE.
 ##################################################
 import xml.etree.ElementTree as ET
+import xml.parsers.expat
 from optparse import OptionParser
 import os
 
@@ -132,9 +133,9 @@ def addPairData(pairs, homTests, falsePosMode = False):
             if t.find('aggregateResults').find('both') is not None:
                 p.falsePosRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
                 p.falsePosRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalFalse'])
-            else:
-                p.truePos += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
-                p.falseNeg += int(t.find('aggregateResults').find('all').attrib['totalFalse'])
+        else:
+            p.truePos += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
+            p.falseNeg += int(t.find('aggregateResults').find('all').attrib['totalFalse'])
             if t.find('aggregateResults').find('both') is not None:
                 p.truePosRegion += int(t.find('aggregateResults').find('both').attrib['totalTrue'])
                 p.falseNegRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
@@ -194,9 +195,12 @@ def reportPairs(pairs, options):
                    p.truePosRegionOutside, p.falsePosRegionOutside, p.falseNegRegionOutside))
 
 def summarize(options):
-    """ summarize() summizes the information contained in options.xml
+    """ summarize() summizes the information contained in file stored in options.xml
     """
-    tree = ET.parse(options.xml)
+    try:
+        tree = ET.parse(options.xml)
+    except xml.parsers.expat.ExpatError:
+        raise RuntimeError('Input xml, %s is not a well formed xml document.' % options.xml)
     root = tree.getroot()
     homTests = root.findall('homologyTests')
     pairs = {}
@@ -204,6 +208,7 @@ def summarize(options):
     addPairData(pairs, homTests[1], falsePosMode = True)
     
     if isRegionMode(pairs):
+        # if a BED was used by mafComparator then the xml will be in Region mode
         suffix = 'Region'
         truePosOut = getItem(pairs, 'truePosRegionOutside', False)
         falseNegOut = getItem(pairs, 'falseNegRegionOutside', False)
@@ -258,6 +263,8 @@ def summarize(options):
     reportPairs(pairs, options)
 
 def isRegionMode(pairs):
+    """ Detects if a BED was used to restrict tests to a region
+    """
     for pair in pairs:
         p = pairs[pair]
         if p.truePosRegion > 0 or p.falsePosRegion > 0 or p.falseNegRegion > 0:
