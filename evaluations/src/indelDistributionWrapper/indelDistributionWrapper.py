@@ -31,18 +31,27 @@ using mafIndelDistribution.py
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 ##################################################
-import lib.libCall as libCall
 import lib.libWrapper as libWrapper
 from optparse import OptionParser
 import os
 import sys
 
 def callEvaluation(options):
-   cmd = ['mafIndelDistribution.py']
+   pickle = os.path.join(options.outDir, 'mafCoverage.pickle')
+
+   # create mafCoveragePickle
+   cmd = ['mafCoveragePickleCreator.py']
    cmd.append('--maf=%s' % options.predMaf)
    cmd.append('--species=%s' % ','.join(options.reg['species']))
+   cmd.append('--pickle=%s' % pickle)
+   libWrapper.runCommands([cmd], os.curdir)
+   
+   # perform gap analysis:
+   cmd = ['mafCoveragePickleGapAnalysis.py']
+   cmd.append('--pickle=%s' % pickle)
    cmd.append('--outfile=%s' % os.path.join(options.outDir, 'indelAndCoverageSummary.xml'))
-   libCall.runCommands([cmd], os.curdir)
+   cmd.append('--noEDges')
+   libWrapper.runCommands([cmd], os.curdir)
 
 def main():
    usage = ('usage: %prog location/ pred.maf set.reg.tab tempDir/ outDir/\n\n'
@@ -53,7 +62,7 @@ def main():
    options, args = parser.parse_args()
    libWrapper.checkOptions(options, args, parser)
    
-   libWrapper.parseRegistry(options)
+   libWrapper.parseRegistry(os.path.basename(sys.argv[0]), options)
    if os.path.basename(sys.argv[0]) not in options.reg['evaluations']:
       sys.exit(0)
    

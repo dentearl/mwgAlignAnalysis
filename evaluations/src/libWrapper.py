@@ -49,7 +49,7 @@ def checkOptions(options, args, parser):
       if not os.path.isdir(a):
          parser.error('%s is not a directory.' % a)
 
-def parseRegistry(options):
+def parseRegistry(caller, options):
    f = open(options.registry, 'r')
    options.reg = {}
    for line in f:
@@ -70,9 +70,14 @@ def parseRegistry(options):
       else:
          # for some k, v pairs the v should not be a list.
          options.reg[key] = val.strip()
+   callerCanRun = False
    for e in options.reg['evaluations']:
        if e != e.replace(' ', ''):
            raise RuntimeError('Malformed evaluations line: items should be comma separated: %s' % e)
+       if e == caller:
+          callerCanRun = True
+   if not callerCanRun:
+      return
    for elm in ['sequences', 'annotations']:
        if elm in options.reg:
            for s in options.reg[elm]:

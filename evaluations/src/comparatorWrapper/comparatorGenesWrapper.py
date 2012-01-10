@@ -55,7 +55,7 @@ def main():
    options, args = parser.parse_args()
    libWrapper.checkOptions(options, args, parser)
    
-   libWrapper.parseRegistry(options)
+   libWrapper.parseRegistry(os.path.basename(sys.argv[0]), options)
    if os.path.basename(sys.argv[0]) not in options.reg['evaluations']:
       sys.exit(0)
    
