@@ -22,4 +22,4 @@ After downloading a package from the [Alignathon website] (http://compbio.soe.uc
 
 <code>$ make analysis location=/path/to/package set=testSet</code>
 
-where <code>location</code> is the path to the package and <code>set</code> is one of the prefixes from the registries directory, i.e. flySet, mammalSet, primateSet or testSet. The Makefile can be run in parallel with <code>-j=[integer]</code> which allows  the evaluations in an analysis to be run in parallel.
+where <code>location</code> is the path to the package and <code>set</code> is one of the prefixes from the registries directory, i.e. flySet, mammalSet, primateSet or testSet. The Makefile can be run in parallel with <code>-j [integer]</code> which allows  the evaluations in an analysis to be run in parallel.

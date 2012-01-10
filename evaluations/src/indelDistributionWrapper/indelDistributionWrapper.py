@@ -50,7 +50,7 @@ def callEvaluation(options):
    cmd = ['mafCoveragePickleGapAnalysis.py']
    cmd.append('--pickle=%s' % pickle)
    cmd.append('--outfile=%s' % os.path.join(options.outDir, 'indelAndCoverageSummary.xml'))
-   cmd.append('--noEDges')
+   cmd.append('--noEdges')
    libWrapper.runCommands([cmd], os.curdir)
 
 def main():
