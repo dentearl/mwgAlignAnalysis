@@ -38,62 +38,62 @@ import os
 
 class ComparisonPair:
     def __init__(self, speciesA, speciesB):
-       assert(speciesA is not None)
-       assert(speciesB is not None)
-       self.species = set([speciesA, speciesB])
-       self.truePos = 0
-       self.falsePos = 0
-       self.falseNeg = 0
-       # region numbers are for comparisons using .bed files
-       self.truePosRegion = 0
-       self.falsePosRegion = 0
-       self.falseNegRegion = 0
-       self.truePosRegionOutside = 0
-       self.falsePosRegionOutside = 0
-       self.falseNegRegionOutside = 0
-       self.precision = None
-       self.recall = None
-       self.precisionRegion = None
-       self.recallRegion = None
-       self.precisionRegionOutside = None
-       self.recallRegionOutside = None
-       names = list(self.species)
-       names = sorted(names, key = lambda x: x[3:])
-       self.niceNames =  '-'.join(names)
-       if len(names) == 1:
-          self.niceNames = 'self-%s' % names[0]
+        assert(speciesA is not None)
+        assert(speciesB is not None)
+        self.species = set([speciesA, speciesB])
+        self.truePos = 0
+        self.falsePos = 0
+        self.falseNeg = 0
+        # region numbers are for comparisons using .bed files
+        self.truePosRegion = 0
+        self.falsePosRegion = 0
+        self.falseNegRegion = 0
+        self.truePosRegionOutside = 0
+        self.falsePosRegionOutside = 0
+        self.falseNegRegionOutside = 0
+        self.precision = None
+        self.recall = None
+        self.precisionRegion = None
+        self.recallRegion = None
+        self.precisionRegionOutside = None
+        self.recallRegionOutside = None
+        names = list(self.species)
+        names = sorted(names, key = lambda x: x[3:])
+        self.niceNames =  '-'.join(names)
+        if len(names) == 1:
+            self.niceNames = 'self-%s' % names[0]
 
     def calcPrecision(self):
-       # assert((self.truePos + self.falsePos) != 0)
-       if (self.truePos + self.falsePos) == 0:
-          self.precision = -1.0
-       else:
-          self.precision = float(self.truePos) / (self.truePos + self.falsePos)
-       if (self.truePosRegion + self.falsePosRegion) == 0:
-          self.precisionRegion = -1.0
-       else:
-          self.precisionRegion = float(self.truePosRegion) / (self.truePosRegion + self.falsePosRegion)
-       if (self.truePosRegionOutside + self.falsePosRegionOutside) == 0:
-          self.precisionRegionOutside = -1.0
-       else:
-          self.precisionRegionOutside = (float(self.truePosRegionOutside) / 
-                                         (self.truePosRegionOutside + self.falsePosRegionOutside))
+        # assert((self.truePos + self.falsePos) != 0)
+        if (self.truePos + self.falsePos) == 0:
+            self.precision = float('nan')
+        else:
+            self.precision = float(self.truePos) / (self.truePos + self.falsePos)
+        if (self.truePosRegion + self.falsePosRegion) == 0:
+            self.precisionRegion = float('nan')
+        else:
+            self.precisionRegion = float(self.truePosRegion) / (self.truePosRegion + self.falsePosRegion)
+        if (self.truePosRegionOutside + self.falsePosRegionOutside) == 0:
+            self.precisionRegionOutside = float('nan')
+        else:
+            self.precisionRegionOutside = (float(self.truePosRegionOutside) / 
+                                           (self.truePosRegionOutside + self.falsePosRegionOutside))
 
     def calcRecall(self):
-       # assert((self.truePos + self.falseNeg) != 0)
-       if (self.truePos + self.falseNeg) == 0:
-          self.recall = -1.0
-       else:
-          self.recall = float(self.truePos) / (self.truePos + self.falseNeg)
-       if (self.truePosRegion + self.falseNegRegion) == 0:
-          self.recallRegion = -1.0
-       else:
-          self.recallRegion = float(self.truePosRegion) / (self.truePosRegion + self.falseNegRegion)
-       if (self.truePosRegionOutside + self.falseNegRegionOutside) == 0:
-          self.recallRegionOutside = -1.0
-       else:
-          self.recallRegionOutside = (float(self.truePosRegionOutside) / 
-                                      (self.truePosRegionOutside + self.falseNegRegionOutside))
+        # assert((self.truePos + self.falseNeg) != 0)
+        if (self.truePos + self.falseNeg) == 0:
+            self.recall = -1.0
+        else:
+            self.recall = float(self.truePos) / (self.truePos + self.falseNeg)
+        if (self.truePosRegion + self.falseNegRegion) == 0:
+            self.recallRegion = -1.0
+        else:
+            self.recallRegion = float(self.truePosRegion) / (self.truePosRegion + self.falseNegRegion)
+        if (self.truePosRegionOutside + self.falseNegRegionOutside) == 0:
+            self.recallRegionOutside = -1.0
+        else:
+            self.recallRegionOutside = (float(self.truePosRegionOutside) / 
+                                        (self.truePosRegionOutside + self.falseNegRegionOutside))
 
 def initOptions(parser):
     parser.add_option('--xml', dest = 'xml', 
@@ -101,9 +101,9 @@ def initOptions(parser):
 
 def checkOptions(options, args, parser):
     if options.xml is None:
-       parser.error('specify --xml')
+        parser.error('specify --xml')
     if not os.path.exists(options.xml):
-       parser.error('--xml %s does not exist' % options.xml)
+        parser.error('--xml %s does not exist' % options.xml)
 
 def addPairData(pairs, homTests, falsePosMode = False):
     """ given the dict `pairs' and a part of the xml tree `homTests',
@@ -229,10 +229,22 @@ def summarize(options):
     falsePosSelf = getItem(pairs, 'falsePos' + suffix, True)
     falseNegSelf = getItem(pairs, 'falseNeg' + suffix, True)
     
-    precision = float(truePos) / (truePos + falsePos)
-    recall = float(truePos) / (truePos + falseNeg)
-    precisionSelf = float(truePosSelf) / (truePosSelf + falsePosSelf)
-    recallSelf = float(truePosSelf) / (truePosSelf + falseNegSelf)
+    if (truePos + falsePos) == 0:
+        precision = float('nan')
+    else:
+        precision = float(truePos) / (truePos + falsePos)
+    if (truePos + falseNeg) == 0:
+        recall = float('nan')
+    else:
+        recall = float(truePos) / (truePos + falseNeg)
+    if (truePosSelf + falsePosSelf) == 0:
+        precisionSelf = float('nan')
+    else:
+        precisionSelf = float(truePosSelf) / (truePosSelf + falsePosSelf)
+    if (truePosSelf + falseNegSelf) == 0:
+        recallSelf = float('nan')
+    else:
+        recallSelf = float(truePosSelf) / (truePosSelf + falseNegSelf)
 
     print '%35s %10s %10s %10s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP', 'FP', 'FN')
     if isRegionMode(pairs):
