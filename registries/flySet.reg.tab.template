@@ -1,18 +1,17 @@
-# drosophila registry file v1.0 
-# 21 November 2011
+# drosophila registry file v2.0
+# 3 February 2012
 # 
 # all paths are relative to the root of the 
 # package set directory.
 # Key	Value
 ####################
 evaluations	indelDistributionWrapper.py
-species	dm, droSim1, droSec1, droYak, droEre2, droAna3, dp4, droPer1, droWil1, droVir3, droMoj3, droGri2, anaGam1, apiMel3, triCas2
-tree	(((((((((dm3:0.059235,(droSim1:0.039799,droSec1:0.039025):0.035598):0.041349,(droYak2:0.104304,droEre2:0.106715):0.054017):0.119983,droAna3:0.377089):0.071962,(dp4:0.028079,droPer1:0.031175):0.369228):0.060569,droWil1:0.536488):0.019784,((droVir3:0.195542,droMoj3:0.254453):0.073077,droGri2:0.290773):0.336972):0.180643,anoGam1:0.783559):0.174661,apiMel3:0.670401):0.382291,triCas2:0.382291);
+species	dm, droSim1, droSec1, droYak, droEre2, droAna3, dp4, droPer1, droWil1, droVir3, droMoj3, droGri2, anaGam1, apiMel3, triCas2, droBia, droBip, droEle, droFic, droKik, droTak, droRho, droEug
+tree	((droGri2:0.183954,droVir3:0.093575):0.000000,(droMoj3:0.110563,((((droBip:0.034265,droAna3:0.042476):0.121927,(droKik:0.097564,((droFic:0.109823,(((dm3:0.023047,(droSim1:0.015485,droSec1:0.015184):0.013850):0.016088,(droYak2:0.026909,droEre2:0.029818):0.008929):0.047596,droEug:0.102473,(droBia:0.069103,droTak:0.060723):0.015855):0.005098):0.010453):0.008044,(droEle:0.062413,droRho:0.051516):0.015405):0.046129):0.018695):0.078585,(droPer1:0.007065,dp4:0.005900):0.185269):0.068212,droWil1:0.259408):0.097093):0.035250);
 ####################
 # The naming convention for sequences is:
-#     SPECIES.fa.masked 
-# and indicates that the sequence has been 
-# soft masked by UCSC.
+#     SPECIES.fa
+# Sequences soft masked by UCSC.
 # species files can be constructed by downloading
 # the .fa.gz file and expanding, or the scaffoldsFa.gz
 # or chromFa.tar.gz (depending on what is available) for each species from the 
@@ -30,8 +29,18 @@ tree	(((((((((dm3:0.059235,(droSim1:0.039799,droSec1:0.039025):0.035598):0.04134
 # droVir3 http://hgdownload.cse.ucsc.edu/goldenPath/droVir3/bigZips/droVir3.fa.gz
 # droWil1 http://hgdownload.cse.ucsc.edu/goldenPath/droWil1/bigZips/droWil1.fa.gz
 # droYak2 http://hgdownload.cse.ucsc.edu/goldenPath/droYak2/bigZips/chromFa.tar.gz
+# droBia  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFFD.1.fsa_nt.gz
+# droBip  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFFE.1.fsa_nt.gz
+# droEle  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFFF.1.fsa_nt.gz
+# droFic  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFFG.1.fsa_nt.gz
+# droKik  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFFH.1.fsa_nt.gz
+# droTak  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFFI.1.fsa_nt.gz
+# droRho_1 ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFPP.1.fsa_nt.gz
+# droRho_2 ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFPP.2.fsa_nt.gz
+# droEug  ftp://anonymous@ftp.ncbi.nih.gov/genbank/wgs/wgs.AFPQ.1.fsa_nt.gz
+# 
 ####################
-sequences	sequences/dm3.fa, sequences/droSim1.fa, sequences/droSec1.fa, sequences/droYak.fa, sequences/droEre2.fa, sequences/droAna3.fa, sequences/dp4.fa, sequences/droPer1.fa, sequences/droWil1.fa, sequences/droVir3.fa, sequences/droMoj3.fa, sequences/droGri2.fa, sequences/anaGam1.fa, sequences/apiMel3.fa, sequences/triCas2.fa
+sequences	sequences/dm3.fa, sequences/droSim1.fa, sequences/droSec1.fa, sequences/droYak.fa, sequences/droEre2.fa, sequences/droAna3.fa, sequences/dp4.fa, sequences/droPer1.fa, sequences/droWil1.fa, sequences/droVir3.fa, sequences/droMoj3.fa, sequences/droGri2.fa, sequences/anaGam1.fa, sequences/apiMel3.fa, sequences/triCas2.fa, sequences/droBia, sequences/droBip, sequences/droEle, sequences/droFic, sequences/droKik, sequences/droTak, sequences/droRho, sequences/droEug
 ####################
 # the name convention for annotations is:
 #     SPECIES.annots.TYPE.bed
