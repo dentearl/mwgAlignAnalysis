@@ -12,6 +12,7 @@ export SHELLOPTS = pipefail
 # 'make analysis set=testSet location=../testPackage'
 #
 ####################
+location := $(realpath ${location})
 dirLocation := ${location:%/=%}
 predictionsDir := ${dirLocation}/predictions
 predictions := $(wildcard ${predictionsDir}/*.maf)
@@ -48,5 +49,5 @@ ${dirLocation}/analysis/%: registries/${set}.reg.tab
 		${dirLocation}/ \
 		registries/${set}.reg.tab \
 		$(realpath ${tempDir}) \
-		${cwd}/$$(dirname $@)
+		$$(dirname $@)
 	touch $@
