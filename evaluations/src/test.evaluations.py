@@ -14,6 +14,8 @@ registry = '''#toy registry
 evaluations	grep, ls, man
 truthMRCA	truths/truth.maf
 truthROOT	truths/truth.maf
+truthMRCAnp	truths/truth.maf
+truthROOTnp	truths/truth.maf
 species	test1, test2, test3
 tree	((test1:0.21,test2:0.18):0.1, test3);
 # comment line
