@@ -1,5 +1,5 @@
-# primateSet registry file v1.0 
-# 16 November 2011
+# primateSet registry file v1.1
+# 15 March 2012
 # 
 # all paths are relative to the root of the 
 # package set directory.
@@ -8,6 +8,8 @@
 evaluations	comparatorWrapper.py, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py
 truthMRCA	truths/ancestor.maf
 truthROOT	truths/burnin.maf
+truthMRCAnp	truths/ancestor.noparalogies.maf
+truthROOTnp	truths/burnin.noparalogies.maf
 species	simChimp, simGorilla, simHuman, simOrang
 tree	((simGorilla:0.008825,(simHuman:0.0067,simChimp:0.006667)sHuman-sChimp:0.00225)sG-sH-sC:0.00968,simOrang:0.018318);
 burninDistance	1.0

@@ -12,6 +12,11 @@
 set -e
 set -o pipefail
 
+if [ $# -ne 5 ]; then
+    echo ERROR, Expected five arguments: Evaluation bin, Location dir, Registry file, Temp dir, Out dir. >&2
+    exit 1
+fi
+
 program=$0
 
 evalAndPred=$1

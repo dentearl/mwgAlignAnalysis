@@ -41,14 +41,17 @@ class ComparisonPair:
         assert(speciesA is not None)
         assert(speciesB is not None)
         self.species = set([speciesA, speciesB])
-        self.truePos = 0
+        self.truePosA = 0 # with respect to the A->B comparison
+        self.truePosB = 0 # with respect to the B->A comparison
         self.falsePos = 0
         self.falseNeg = 0
         # region numbers are for comparisons using .bed files
-        self.truePosRegion = 0
+        self.truePosRegionA = 0 # wrt A->B
+        self.truePosRegionB = 0 # wrt B->A
         self.falsePosRegion = 0
         self.falseNegRegion = 0
-        self.truePosRegionOutside = 0
+        self.truePosRegionOutsideA = 0 # wrt A->B
+        self.truePosRegionOutsideB = 0 # wrt B->A
         self.falsePosRegionOutside = 0
         self.falseNegRegionOutside = 0
         self.precision = None
@@ -64,36 +67,40 @@ class ComparisonPair:
             self.niceNames = 'self-%s' % names[0]
 
     def calcPrecision(self):
-        # assert((self.truePos + self.falsePos) != 0)
-        if (self.truePos + self.falsePos) == 0:
+        # Precision is calculated as 
+        # TP_B / (TP_B + FP)
+        # We use the TP_B since FP comes from the B->A comparison
+        if (self.truePosB + self.falsePos) == 0:
             self.precision = float('nan')
         else:
-            self.precision = float(self.truePos) / (self.truePos + self.falsePos)
-        if (self.truePosRegion + self.falsePosRegion) == 0:
+            self.precision = float(self.truePosB) / (self.truePosB + self.falsePos)
+        if (self.truePosRegionB + self.falsePosRegion) == 0:
             self.precisionRegion = float('nan')
         else:
-            self.precisionRegion = float(self.truePosRegion) / (self.truePosRegion + self.falsePosRegion)
-        if (self.truePosRegionOutside + self.falsePosRegionOutside) == 0:
+            self.precisionRegionB = float(self.truePosRegionB) / (self.truePosRegionB + self.falsePosRegion)
+        if (self.truePosRegionOutsideB + self.falsePosRegionOutside) == 0:
             self.precisionRegionOutside = float('nan')
         else:
-            self.precisionRegionOutside = (float(self.truePosRegionOutside) / 
-                                           (self.truePosRegionOutside + self.falsePosRegionOutside))
+            self.precisionRegionOutside = (float(self.truePosRegionOutsideB) / 
+                                           (self.truePosRegionOutsideB + self.falsePosRegionOutside))
 
     def calcRecall(self):
-        # assert((self.truePos + self.falseNeg) != 0)
-        if (self.truePos + self.falseNeg) == 0:
+        # Recall is calculated as 
+        # TP_A / (TP_A + FN)
+        # We use the TP_A since FN comes from the A->B comparison
+        if (self.truePosA + self.falseNeg) == 0:
             self.recall = -1.0
         else:
-            self.recall = float(self.truePos) / (self.truePos + self.falseNeg)
-        if (self.truePosRegion + self.falseNegRegion) == 0:
+            self.recall = float(self.truePosA) / (self.truePosA + self.falseNeg)
+        if (self.truePosRegionA + self.falseNegRegion) == 0:
             self.recallRegion = -1.0
         else:
-            self.recallRegion = float(self.truePosRegion) / (self.truePosRegion + self.falseNegRegion)
-        if (self.truePosRegionOutside + self.falseNegRegionOutside) == 0:
+            self.recallRegion = float(self.truePosRegionA) / (self.truePosRegionA + self.falseNegRegion)
+        if (self.truePosRegionOutsideA + self.falseNegRegionOutside) == 0:
             self.recallRegionOutside = -1.0
         else:
-            self.recallRegionOutside = (float(self.truePosRegionOutside) / 
-                                        (self.truePosRegionOutside + self.falseNegRegionOutside))
+            self.recallRegionOutside = (float(self.truePosRegionOutsideA) / 
+                                        (self.truePosRegionOutsideA + self.falseNegRegionOutside))
 
 def initOptions(parser):
     parser.add_option('--xml', dest = 'xml', 
@@ -108,7 +115,11 @@ def checkOptions(options, args, parser):
 def addPairData(pairs, homTests, falsePosMode = False):
     """ given the dict `pairs' and a part of the xml tree `homTests',
     addPairData() walks the tree to add data to the pairs dict.
-    falsePosMode vs truePosMode.
+    falsePosMode vs truePosMode:
+    the first homology test in the mafComparator output is A->B and the 
+    results of this comparison will be truePositives.
+    the second homology test in the mC output is B->A and the results
+    of this comparison can be false positives (falsePosMode).
     """
     hpTests = homTests.find('homologyPairTests')
     tests = hpTests.findall('homologyTest')
@@ -121,7 +132,7 @@ def addPairData(pairs, homTests, falsePosMode = False):
             pass
             # do not compare a genome to itself
             # continue
-        if t.attrib['sequenceA'] == 'aggregate':
+        if t.attrib['sequenceA'] == 'aggregate' or t.attrib['sequenceB'] == 'aggregate':
             # ignore the aggregate sequences
             continue
         p = findPair(seqA, seqB, pairs)
@@ -129,17 +140,20 @@ def addPairData(pairs, homTests, falsePosMode = False):
             p = ComparisonPair(seqA, seqB)
             pairs['%s-%s' % (seqA, seqB)] = p
         if falsePosMode:
+            p.truePosB += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
             p.falsePos += int(t.find('aggregateResults').find('all').attrib['totalFalse'])
             if t.find('aggregateResults').find('both') is not None:
+                p.truePosRegionB += int(t.find('aggregateResults').find('both').attrib['totalTrue'])
                 p.falsePosRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
+                p.truePosRegionOutsideB += int(t.find('aggregateResults').find('neither').attrib['totalTrue'])
                 p.falsePosRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalFalse'])
         else:
-            p.truePos += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
+            p.truePosA += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
             p.falseNeg += int(t.find('aggregateResults').find('all').attrib['totalFalse'])
             if t.find('aggregateResults').find('both') is not None:
-                p.truePosRegion += int(t.find('aggregateResults').find('both').attrib['totalTrue'])
+                p.truePosRegionA += int(t.find('aggregateResults').find('both').attrib['totalTrue'])
                 p.falseNegRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
-                p.truePosRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalTrue'])
+                p.truePosRegionOutsideA += int(t.find('aggregateResults').find('neither').attrib['totalTrue'])
                 p.falseNegRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalFalse'])
 
 def findPair(seqA, seqB, pairs):
@@ -151,6 +165,7 @@ def findPair(seqA, seqB, pairs):
         # if '%s-%s' % (seqA, seqB) in pairs:
         #    raise RuntimeError('Duplicate pair found in `pairs\' dict: %s-%s' % (seqA, seqB))
         return pairs['%s-%s' % (seqB, seqA)]
+    return None
 
 def reportPairs(pairs, options):
     print ''
@@ -181,18 +196,19 @@ def reportPairs(pairs, options):
             fRegOutStr = '%.5f' % (2 * ((p.precisionRegionOutside * p.recallRegionOutside)/
                                         (p.precisionRegionOutside + p.recallRegionOutside)))
         if not isRegionMode(pairs):
-            print('%35s %10s %10.5f %10s %9d %9d %9d' % 
+            print('%35s %10s %10.5f %10s %9d %9d %9d %9d' % 
                   (p.niceNames, precStr, p.recall, fStr,
-                   p.truePos, p.falsePos, p.falseNeg))
+                   p.truePosA, p.truePosB, p.falsePos, p.falseNeg))
         else:
-            print('%35s %10s %10.5f %10s %9d %9d %9d' % 
+            print('%35s %10s %10.5f %10s %9d %9d %9d %9d' % 
                   ('%s inside' % p.niceNames, precRegStr, p.recallRegion,
                    fRegStr,
-                   p.truePosRegion, p.falsePosRegion, p.falseNegRegion))
-            print('%35s %10s %10.5f %10s %9d %9d %9d' % 
+                   p.truePosRegionA, p.truePosRegionB, p.falsePosRegion, p.falseNegRegion))
+            print('%35s %10s %10.5f %10s %9d %9d %9d %9d' % 
                   ('%s outside' % p.niceNames, precRegOutStr, p.recallRegionOutside,
                    fRegOutStr,
-                   p.truePosRegionOutside, p.falsePosRegionOutside, p.falseNegRegionOutside))
+                   p.truePosRegionOutsideA, p.truePosRegionOutsideB, 
+                   p.falsePosRegionOutside, p.falseNegRegionOutside))
 
 def summarize(options):
     """ summarize() summizes the information contained in file stored in options.xml
@@ -210,68 +226,72 @@ def summarize(options):
     if isRegionMode(pairs):
         # if a BED was used by mafComparator then the xml will be in Region mode
         suffix = 'Region'
-        truePosOut = getItem(pairs, 'truePosRegionOutside', False)
+        truePosOutA = getItem(pairs, 'truePosRegionOutsideA', False)
+        truePosOutB = getItem(pairs, 'truePosRegionOutsideB', False)
         falseNegOut = getItem(pairs, 'falseNegRegionOutside', False)
         falsePosOut = getItem(pairs, 'falsePosRegionOutside', False)
-        truePosSelfOut = getItem(pairs, 'truePosRegionOutside', True)
+        truePosSelfOutA = getItem(pairs, 'truePosRegionOutsideA', True)
+        truePosSelfOutB = getItem(pairs, 'truePosRegionOutsideB', True)
         falsePosSelfOut = getItem(pairs, 'falsePosRegionOutside', True)
         falseNegSelfOut = getItem(pairs, 'falseNegRegionOutside', True)
-        precisionOut = float(truePosOut) / (truePosOut + falsePosOut)
-        recallOut = float(truePosOut) / (truePosOut + falseNegOut)
-        precisionSelfOut = float(truePosSelfOut) / (truePosSelfOut + falsePosSelfOut)
-        recallSelfOut = float(truePosSelfOut) / (truePosSelfOut + falseNegSelfOut)
+        precisionOut = float(truePosOutB) / (truePosOutB + falsePosOut)
+        recallOut = float(truePosOutA) / (truePosOutA + falseNegOut)
+        precisionSelfOut = float(truePosSelfOutB) / (truePosSelfOutB + falsePosSelfOut)
+        recallSelfOut = float(truePosSelfOutA) / (truePosSelfOutA + falseNegSelfOut)
     else:
         suffix = ''
-    truePos = getItem(pairs, 'truePos' + suffix, False)
+    truePosA = getItem(pairs, 'truePosA' + suffix, False)
+    truePosB = getItem(pairs, 'truePosB' + suffix, False)
     falseNeg = getItem(pairs, 'falseNeg' + suffix, False)
     falsePos = getItem(pairs, 'falsePos' + suffix, False)
-    truePosSelf = getItem(pairs, 'truePos' + suffix, True)
+    truePosSelfA = getItem(pairs, 'truePosA' + suffix, True)
+    truePosSelfB = getItem(pairs, 'truePosB' + suffix, True)
     falsePosSelf = getItem(pairs, 'falsePos' + suffix, True)
     falseNegSelf = getItem(pairs, 'falseNeg' + suffix, True)
     
-    if (truePos + falsePos) == 0:
+    if (truePosB + falsePos) == 0:
         precision = float('nan')
     else:
-        precision = float(truePos) / (truePos + falsePos)
-    if (truePos + falseNeg) == 0:
+        precision = float(truePosB) / (truePosB + falsePos)
+    if (truePosA + falseNeg) == 0:
         recall = float('nan')
     else:
-        recall = float(truePos) / (truePos + falseNeg)
-    if (truePosSelf + falsePosSelf) == 0:
+        recall = float(truePosA) / (truePosA + falseNeg)
+    if (truePosSelfB + falsePosSelf) == 0:
         precisionSelf = float('nan')
     else:
-        precisionSelf = float(truePosSelf) / (truePosSelf + falsePosSelf)
-    if (truePosSelf + falseNegSelf) == 0:
+        precisionSelf = float(truePosSelfB) / (truePosSelfB + falsePosSelf)
+    if (truePosSelfA + falseNegSelf) == 0:
         recallSelf = float('nan')
     else:
-        recallSelf = float(truePosSelf) / (truePosSelf + falseNegSelf)
+        recallSelf = float(truePosSelfA) / (truePosSelfA + falseNegSelf)
 
-    print '%35s %10s %10s %10s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP', 'FP', 'FN')
+    print '%35s %10s %10s %10s %9s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP_A', 'TP_B', 'FP', 'FN')
     if isRegionMode(pairs):
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self) inside', precision, recall, 
-                                                         2 * (precision * recall) / (precision + recall),
-                                                         truePos, falsePos, falseNeg)
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self) outside', precisionOut, recallOut, 
-                                                         2 * ((precisionOut * recallOut) / 
-                                                              (precisionOut + recallOut)),
-                                                         truePosOut, falsePosOut, falseNegOut)
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self) inside', precisionSelf, recallSelf, 
-                                                         2 * ((precisionSelf * recallSelf) / 
-                                                              (precisionSelf + recallSelf)),
-                                                         truePosSelf, falsePosSelf, falseNegSelf)
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self) outside', precisionSelfOut, 
-                                                         recallSelfOut,
-                                                         2 * ((precisionSelfOut * recallSelfOut) / 
-                                                              (precisionSelfOut + recallSelfOut)),
-                                                         truePosSelfOut, falsePosSelfOut, falseNegSelfOut)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self) inside', precision, recall, 
+                                                             2 * (precision * recall) / (precision + recall),
+                                                             truePosA, truePosB, falsePos, falseNeg)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self) outside', precisionOut, recallOut, 
+                                                             2 * ((precisionOut * recallOut) / 
+                                                                  (precisionOut + recallOut)),
+                                                             truePosOutA, truePosOutA, falsePosOut, falseNegOut)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/  self) inside', precisionSelf, recallSelf, 
+                                                             2 * ((precisionSelf * recallSelf) / 
+                                                                  (precisionSelf + recallSelf)),
+                                                             truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/  self) outside', precisionSelfOut, 
+                                                             recallSelfOut,
+                                                             2 * ((precisionSelfOut * recallSelfOut) / 
+                                                                  (precisionSelfOut + recallSelfOut)),
+                                                             truePosSelfOutA, truePosSelfOutB, falsePosSelfOut, falseNegSelfOut)
     else:
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/o self)', precision, recall, 
-                                                         2 * (precision * recall) / (precision + recall),
-                                                         truePos, falsePos, falseNeg)
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d' % ('Overall (w/  self)', precisionSelf, recallSelf, 
-                                                         2 * ((precisionSelf * recallSelf) / 
-                                                              (precisionSelf + recallSelf)),
-                                                         truePosSelf, falsePosSelf, falseNegSelf)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self)', precision, recall, 
+                                                             2 * (precision * recall) / (precision + recall),
+                                                             truePosA, truePosB, falsePos, falseNeg)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/  self)', precisionSelf, recallSelf, 
+                                                             2 * ((precisionSelf * recallSelf) / 
+                                                                  (precisionSelf + recallSelf)),
+                                                             truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf)
     reportPairs(pairs, options)
 
 def isRegionMode(pairs):
@@ -279,7 +299,7 @@ def isRegionMode(pairs):
     """
     for pair in pairs:
         p = pairs[pair]
-        if p.truePosRegion > 0 or p.falsePosRegion > 0 or p.falseNegRegion > 0:
+        if p.truePosRegionA > 0 or p.truePosRegionB > 0 or p.falsePosRegion > 0 or p.falseNegRegion > 0:
             return True
 
 def getItem(pairs, item, alignSelf):

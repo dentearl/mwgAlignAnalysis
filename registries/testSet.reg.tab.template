@@ -1,5 +1,5 @@
-# testSet registry file v1.0 
-# 19 October 2011
+# testSet registry file v1.1
+# 15 March 2012
 # 
 # all paths are relative to the root of the 
 # package set directory.
@@ -8,6 +8,8 @@
 evaluations	comparatorWrapper.py, recorder.sh, wordCountWrapper.sh, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py, indelDistributionWrapper.py
 truthMRCA	truths/ancestor.maf
 truthROOT	truths/burnin.maf
+truthMRCAnp	truths/ancestor.noparalogies.maf
+truthROOTnp	truths/burnin.noparalogies.maf
 species	simCow, simDog, simHuman, simMouse, simRat
 tree	((simCow:0.18908,simDog:0.16303)sCow-sDog:0.032898,(simHuman:0.144018,(simMouse:0.084509,simRat:0.091589)sMouse-sRat:0.271974)sH-sM-sR:0.020593);
 burninDistance	0.2
