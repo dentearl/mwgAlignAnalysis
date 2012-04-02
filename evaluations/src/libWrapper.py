@@ -31,6 +31,7 @@ Common functions used by python wrappers for alignathon
 # THE SOFTWARE.
 ##################################################
 import os
+import sys
 import subprocess
 
 def checkOptions(options, args, parser):
