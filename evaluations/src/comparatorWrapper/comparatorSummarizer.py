@@ -61,7 +61,7 @@ class ComparisonPair:
         self.precisionRegionOutside = None
         self.recallRegionOutside = None
         names = list(self.species)
-        names = sorted(names, key = lambda x: x[3:])
+        names = sorted(names, key = lambda x: x[3:]) # ignore the "sim" part of the name
         self.niceNames =  '-'.join(names)
         if len(names) == 1:
             self.niceNames = 'self-%s' % names[0]
@@ -126,7 +126,7 @@ def addPairData(pairs, homTests, falsePosMode = False):
     for t in tests:
         seqA = t.attrib['sequenceA'].split('.')[0]
         seqB = t.attrib['sequenceB'].split('.')[0]
-        if seqA == 'self':
+        if seqA == 'self' or seqB == 'self':
             continue
         if seqA == seqB:
             pass
@@ -140,17 +140,21 @@ def addPairData(pairs, homTests, falsePosMode = False):
             p = ComparisonPair(seqA, seqB)
             pairs['%s-%s' % (seqA, seqB)] = p
         if falsePosMode:
+            # the second homology test in the xml, B->A
             p.truePosB += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
             p.falsePos += int(t.find('aggregateResults').find('all').attrib['totalFalse'])
             if t.find('aggregateResults').find('both') is not None:
+                # bed file established regions
                 p.truePosRegionB += int(t.find('aggregateResults').find('both').attrib['totalTrue'])
                 p.falsePosRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
                 p.truePosRegionOutsideB += int(t.find('aggregateResults').find('neither').attrib['totalTrue'])
                 p.falsePosRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalFalse'])
         else:
+            # the first homology test in the xml, A->B
             p.truePosA += int(t.find('aggregateResults').find('all').attrib['totalTrue'])
             p.falseNeg += int(t.find('aggregateResults').find('all').attrib['totalFalse'])
             if t.find('aggregateResults').find('both') is not None:
+                # bed file established regions
                 p.truePosRegionA += int(t.find('aggregateResults').find('both').attrib['totalTrue'])
                 p.falseNegRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
                 p.truePosRegionOutsideA += int(t.find('aggregateResults').find('neither').attrib['totalTrue'])
@@ -202,7 +206,7 @@ def reportPairs(pairs, options):
                    p.truePosA, p.truePosB, p.falsePos, p.falseNeg))
         else:
             print('%35s %10s %10.5f %10s %9d %9d %9d %9d' % 
-                  ('%s inside' % p.niceNames, precRegStr, p.recallRegion,
+                  ('%s  inside' % p.niceNames, precRegStr, p.recallRegion,
                    fRegStr,
                    p.truePosRegionA, p.truePosRegionB, p.falsePosRegion, p.falseNegRegion))
             print('%35s %10s %10.5f %10s %9d %9d %9d %9d' % 
@@ -226,7 +230,7 @@ def summarize(options):
     
     if isRegionMode(pairs):
         # if a BED was used by mafComparator then the xml will be in Region mode
-        suffix = 'RegionOutside'
+        suffix = 'Region'
         truePosOutA = getItem(pairs, 'truePosRegionOutsideA', False)
         truePosOutB = getItem(pairs, 'truePosRegionOutsideB', False)
         falseNegOut = getItem(pairs, 'falseNegRegionOutside', False)
@@ -269,14 +273,19 @@ def summarize(options):
 
     print '%35s %10s %10s %10s %9s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP_A', 'TP_B', 'FP', 'FN')
     if isRegionMode(pairs):
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self) inside', precision, recall, 
+        sanityCheckRegionMode(truePosA, truePosB, falsePos, falseNeg, 
+                              truePosOutA, truePosOutB, falsePosOut, falseNegOut, 
+                              truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf, 
+                              truePosSelfOutA, truePosSelfOutB, falsePosSelfOut, falseNegSelfOut, 
+                              pairs, options)
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self)  inside', precision, recall, 
                                                              2 * (precision * recall) / (precision + recall),
                                                              truePosA, truePosB, falsePos, falseNeg)
         print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self) outside', precisionOut, recallOut, 
                                                              2 * ((precisionOut * recallOut) / 
                                                                   (precisionOut + recallOut)),
                                                              truePosOutA, truePosOutA, falsePosOut, falseNegOut)
-        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/  self) inside', precisionSelf, recallSelf, 
+        print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/  self)  inside', precisionSelf, recallSelf, 
                                                              2 * ((precisionSelf * recallSelf) / 
                                                                   (precisionSelf + recallSelf)),
                                                              truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf)
@@ -286,6 +295,8 @@ def summarize(options):
                                                                   (precisionSelfOut + recallSelfOut)),
                                                              truePosSelfOutA, truePosSelfOutB, falsePosSelfOut, falseNegSelfOut)
     else:
+        sanityCheck(truePosA, truePosB, falsePos, falseNeg, truePosSelfA, 
+                    truePosSelfB, falsePosSelf, falseNegSelf, pairs, options)
         print '%35s %10.5f %10.5f %10.5f %9d %9d %9d %9d' % ('Overall (w/o self)', precision, recall, 
                                                              2 * (precision * recall) / (precision + recall),
                                                              truePosA, truePosB, falsePos, falseNeg)
@@ -293,8 +304,102 @@ def summarize(options):
                                                              2 * ((precisionSelf * recallSelf) / 
                                                                   (precisionSelf + recallSelf)),
                                                              truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf)
+    
     reportPairs(pairs, options)
-
+def sanityCheckRegionMode(truePosA, truePosB, falsePos, falseNeg, 
+                          truePosOutA, truePosOutB, falsePosOut, falseNegOut, 
+                          truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf, 
+                          truePosSelfOutA, truePosSelfOutB, falsePosSelfOut, falseNegSelfOut, 
+                          pairs, options):
+    # Each column of  numbers reported in the rows labeled "Overall" should be the sum of 
+    # the numbers contained in the column corresponding to "inside" or "outside" status.
+    obsTruePosA = 0
+    obsTruePosB = 0
+    obsFalsePos = 0
+    obsFalseNeg = 0
+    obsTruePosOutA = 0
+    obsTruePosOutB = 0
+    obsFalsePosOut = 0
+    obsFalseNegOut = 0
+    obsTruePosASelf = 0
+    obsTruePosBSelf = 0
+    obsFalsePosSelf = 0
+    obsFalseNegSelf = 0
+    obsTruePosASelfOut = 0
+    obsTruePosBSelfOut = 0
+    obsFalsePosSelfOut = 0
+    obsFalseNegSelfOut = 0
+    for pair in pairs:
+        p = pairs[pair]
+        if p.niceNames.startswith('self-'):
+            obsTruePosASelf += p.truePosRegionA
+            obsTruePosBSelf += p.truePosRegionB
+            obsFalsePosSelf += p.falsePosRegion
+            obsFalseNegSelf += p.falseNegRegion
+            obsTruePosASelfOut += p.truePosRegionOutsideA
+            obsTruePosBSelfOut += p.truePosRegionOutsideB
+            obsFalsePosSelfOut += p.falsePosRegionOutside
+            obsFalseNegSelfOut += p.falseNegRegionOutside
+        else:
+            obsTruePosA += p.truePosRegionA
+            obsTruePosB += p.truePosRegionB
+            obsFalsePos += p.falsePosRegion
+            obsFalseNeg += p.falseNegRegion
+            obsTruePosOutA += p.truePosRegionOutsideA
+            obsTruePosOutB += p.truePosRegionOutsideB
+            obsFalsePosOut += p.falsePosRegionOutside
+            obsFalseNegOut += p.falseNegRegionOutside
+    obsTruePosASelf += obsTruePosA
+    obsTruePosBSelf += obsTruePosB
+    obsFalsePosSelf += obsFalsePos
+    obsFalseNegSelf += obsFalseNeg
+    obsTruePosASelfOut += obsTruePosOutA
+    obsTruePosBSelfOut += obsTruePosOutB
+    obsFalsePosSelfOut += obsFalsePosOut
+    obsFalseNegSelfOut += obsFalseNegOut
+    for obs, exp in [(obsTruePosA, truePosA), (obsTruePosB, truePosB), 
+                     (obsFalsePos, falsePos), (obsFalseNeg, falseNeg),
+                     (obsTruePosOutA, truePosOutA), (obsTruePosOutB, truePosOutB), 
+                     (obsFalsePosOut, falsePosOut), (obsFalseNegOut, falseNegOut),
+                     (obsTruePosASelf, truePosSelfA), (obsTruePosBSelf, truePosSelfB), 
+                     (obsFalsePosSelf, falsePosSelf), (obsFalseNegSelf, falseNegSelf),
+                     (obsTruePosASelfOut, truePosSelfOutA), (obsTruePosBSelfOut, truePosSelfOutB), 
+                     (obsFalsePosSelfOut, falsePosSelfOut), (obsFalseNegSelfOut, falseNegSelfOut),
+                     ]:
+        assert(obs == exp)
+def sanityCheck(truePosA, truePosB, falsePos, falseNeg, truePosASelf, 
+                truePosBSelf, falsePosSelf, falseNegSelf, pairs, options):
+    # Each column of numbers reported in the rows labeled "Overall" should be the sum of 
+    # the numbers contained in the column.
+    obsTruePosA = 0
+    obsTruePosB = 0
+    obsFalsePos = 0
+    obsFalseNeg = 0
+    obsTruePosASelf = 0
+    obsTruePosBSelf = 0
+    obsFalsePosSelf = 0
+    obsFalseNegSelf = 0
+    for pair in pairs:
+        p = pairs[pair]
+        if p.niceNames.startswith('self-'):
+            obsTruePosASelf += p.truePosA
+            obsTruePosBSelf += p.truePosB
+            obsFalsePosSelf += p.falsePos
+            obsFalseNegSelf += p.falseNeg
+        else:
+            obsTruePosA += p.truePosA
+            obsTruePosB += p.truePosB
+            obsFalsePos += p.falsePos
+            obsFalseNeg += p.falseNeg
+    obsTruePosASelf += obsTruePosA
+    obsTruePosBSelf += obsTruePosB
+    obsFalsePosSelf += obsFalsePos
+    obsFalseNegSelf += obsFalseNeg
+    for obs, exp in [(obsTruePosA, truePosA), (obsTruePosB, truePosB), 
+                     (obsFalsePos, falsePos), (obsFalseNeg, falseNeg),
+                     (obsTruePosASelf, truePosASelf), (obsTruePosBSelf, truePosBSelf), 
+                     (obsFalsePosSelf, falsePosSelf), (obsFalseNegSelf, falseNegSelf),]:
+        assert(obs == exp)
 def isRegionMode(pairs):
     """ Detects if a BED was used to restrict tests to a region
     """
