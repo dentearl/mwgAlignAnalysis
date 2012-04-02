@@ -55,12 +55,14 @@ def parseRegistry(caller, options):
    options.reg = {}
    for line in f:
       line = line.strip()
+      if line == '':
+         continue
       if line.startswith('#'):
          continue
       try:
          key, val = line.split('\t')
       except ValueError:
-         sys.stderr.write('Warning: Malformed registry file.\n')
+         sys.stderr.write('Warning: Malformed registry file. Expected to find key-value pair (tab separated).\n')
          continue
       if key in options.reg:
          raise RuntimeError('Multiple copies of one key "%s" found in registry' % key)
