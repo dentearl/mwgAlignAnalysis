@@ -2,7 +2,7 @@ bin := ../../bin
 util := ../../util
 .PHONY := all test clean
 
-wrappers := comparatorWrapper.py comparatorGenesWrapper.py comparatorRepeatsWrapper.py comparatorNeutralWrapper.py
+wrappers := comparatorWrapper.py comparatorGenesWrapper.py comparatorRepeatsWrapper.py comparatorRepeatsComplementWrapper.py comparatorNeutralWrapper.py
 utilities := comparatorSummarizer.py
 binWrappers := $(foreach f,${wrappers},${bin}/$f)
 utilUtilities := $(foreach f,${utilities},${util}/$f)
