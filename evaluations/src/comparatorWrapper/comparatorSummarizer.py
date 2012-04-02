@@ -77,7 +77,7 @@ class ComparisonPair:
         if (self.truePosRegionB + self.falsePosRegion) == 0:
             self.precisionRegion = float('nan')
         else:
-            self.precisionRegionB = float(self.truePosRegionB) / (self.truePosRegionB + self.falsePosRegion)
+            self.precisionRegion = float(self.truePosRegionB) / (self.truePosRegionB + self.falsePosRegion)
         if (self.truePosRegionOutsideB + self.falsePosRegionOutside) == 0:
             self.precisionRegionOutside = float('nan')
         else:
@@ -157,6 +157,7 @@ def addPairData(pairs, homTests, falsePosMode = False):
                 p.falseNegRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalFalse'])
 
 def findPair(seqA, seqB, pairs):
+    # Check to see if the pair (seqA, seqB) is stored in pairs. Return None if not, return the pair if so.
     if '%s-%s' % (seqA, seqB) in pairs:
         # if '%s-%s' % (seqB, seqA) in pairs:
         #    raise RuntimeError('Duplicate pair found in `pairs\' dict: %s-%s' % (seqA, seqB))
@@ -174,21 +175,21 @@ def reportPairs(pairs, options):
         p = pairs[pair]
         p.calcRecall()
         p.calcPrecision()
-        if p.precision == -1.0:
+        if p.precision == -1.0 or (p.precision + p.recall) == 0:
             precStr = 'nan'
             fStr = 'nan'
         else:
             precStr = '%.5f' % p.precision
             fStr = '%.5f' % (2 * ((p.precision * p.recall)/
                                   (p.precision + p.recall)))
-        if p.precisionRegion == -1.0:
+        if p.precisionRegion == -1.0 or (p.precisionRegion + p.recallRegion) == 0:
             precRegStr = 'nan'
             fRegStr = 'nan'
         else:
             precRegStr = '%.5f' % p.precisionRegion
             fRegStr = '%.5f' % (2 * ((p.precisionRegion * p.recallRegion)/
                                      (p.precisionRegion + p.recallRegion)))
-        if p.precisionRegionOutside == -1.0:
+        if p.precisionRegionOutside == -1.0 or (p.precisionRegionOutside + p.recallRegionOutside) == 0:
             precRegOutStr = 'nan'
             fRegOutStr = 'nan'
         else:
@@ -225,7 +226,7 @@ def summarize(options):
     
     if isRegionMode(pairs):
         # if a BED was used by mafComparator then the xml will be in Region mode
-        suffix = 'Region'
+        suffix = 'RegionOutside'
         truePosOutA = getItem(pairs, 'truePosRegionOutsideA', False)
         truePosOutB = getItem(pairs, 'truePosRegionOutsideB', False)
         falseNegOut = getItem(pairs, 'falseNegRegionOutside', False)
@@ -240,12 +241,12 @@ def summarize(options):
         recallSelfOut = float(truePosSelfOutA) / (truePosSelfOutA + falseNegSelfOut)
     else:
         suffix = ''
-    truePosA = getItem(pairs, 'truePosA' + suffix, False)
-    truePosB = getItem(pairs, 'truePosB' + suffix, False)
+    truePosA = getItem(pairs, 'truePos' + suffix + 'A', False)
+    truePosB = getItem(pairs, 'truePos' + suffix + 'B', False)
     falseNeg = getItem(pairs, 'falseNeg' + suffix, False)
     falsePos = getItem(pairs, 'falsePos' + suffix, False)
-    truePosSelfA = getItem(pairs, 'truePosA' + suffix, True)
-    truePosSelfB = getItem(pairs, 'truePosB' + suffix, True)
+    truePosSelfA = getItem(pairs, 'truePos' + suffix + 'A', True)
+    truePosSelfB = getItem(pairs, 'truePos' + suffix + 'B', True)
     falsePosSelf = getItem(pairs, 'falsePos' + suffix, True)
     falseNegSelf = getItem(pairs, 'falseNeg' + suffix, True)
     
