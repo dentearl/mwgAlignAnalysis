@@ -271,7 +271,7 @@ def summarize(options):
     else:
         recallSelf = float(truePosSelfA) / (truePosSelfA + falseNegSelf)
 
-    print '%35s %10s %10s %10s %9s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP_A', 'TP_B', 'FP', 'FN')
+    print '%35s %10s %10s %10s %9s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP (A)', 'TP (B)', 'FP (B)', 'FN (A)')
     if isRegionMode(pairs):
         sanityCheckRegionMode(truePosA, truePosB, falsePos, falseNeg, 
                               truePosOutA, truePosOutB, falsePosOut, falseNegOut, 
