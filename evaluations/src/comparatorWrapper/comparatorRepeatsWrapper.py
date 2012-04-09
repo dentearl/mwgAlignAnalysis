@@ -39,11 +39,14 @@ import os
 import sys
 
 def callEvaluation(options):
-   cmd = libComparator.basicCommand('comparatorRepeats.xml', options)
-   repeatAnnots = libComparator.getAnnots('repeats', options)
-   cmd.append('--bedFiles=%s' % ','.join(repeatAnnots))
-   libWrapper.runCommands([cmd], os.curdir)
-   libWrapper.recordCommand(cmd, os.path.join(options.outDir, 'command.txt'))
+   annots = libComparator.getAnnots('repeats', options)
+   cmds = []
+   for t in ['MRCA', 'MRCAnp', 'ROOT', 'ROOTnp']:
+      cmd = libComparator.basicCommand('comparator%sRepeats.xml' % t, 'truth%s' % t, options)
+      cmd.append('--bedFiles=%s' % ','.join(annots))
+      cmds.append(cmd)
+   libWrapper.runCommands(cmds, os.curdir)
+   libWrapper.recordCommands(cmds, os.path.join(options.outDir, 'commands.txt'))
 
 def main():
    usage = ('usage: %prog location/ pred.maf set.reg.tab tempDir/ outDir/\n\n'

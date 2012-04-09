@@ -39,11 +39,14 @@ import os
 import sys
 
 def callEvaluation(options):
-   cmd = libComparator.basicCommand('comparatorGenes.xml', options)
-   geneAnnots = libComparator.getAnnots('genes', options)
-   cmd.append('--bedFiles=%s' % ','.join(geneAnnots))
-   libWrapper.runCommands([cmd], os.curdir)
-   libWrapper.recordCommand(cmd, os.path.join(options.outDir, 'command.txt'))
+   annots = libComparator.getAnnots('genes', options)
+   cmds = []
+   for t in ['MRCA', 'MRCAnp', 'ROOT', 'ROOTnp']:
+      cmd = libComparator.basicCommand('comparator%sGenes.xml' % t, 'truth%s' % t, options)
+      cmd.append('--bedFiles=%s' % ','.join(annots))
+      cmds.append(cmd)
+   libWrapper.runCommands(cmds, os.curdir)
+   libWrapper.recordCommands(cmds, os.path.join(options.outDir, 'commands.txt'))
 
 def main():
    usage = ('usage: %prog location/ pred.maf set.reg.tab tempDir/ outDir/\n\n'
