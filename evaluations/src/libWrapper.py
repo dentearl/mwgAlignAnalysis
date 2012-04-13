@@ -38,15 +38,17 @@ def checkOptions(options, args, parser):
    if len(args) != 5:
       parser.error('Args should contain five items: 1) location of package directory '
                    '2) predicted maf 3) registry file 4) temporary directory 5) output directory')
-   options.location= args[0]
+   options.location = args[0]
    options.predMaf = args[1]
-   options.registry= args[2]
+   options.registry = args[2]
    options.tempDir = args[3]
-   options.outDir  = args[4]
-   for a in args:
+   options.outDir = args[4]
+   for a, name in [(options.location, 'package directory'), (options.predMaf, 'predicted maf'), 
+                   (options.registry, 'registry file'), (options.tempDir, 'temporary directory'), 
+                   (options.outDir, 'output directory')]:
       if not os.path.exists(a):
-         parser.error('%s does not exist.' % a)
-   for a in [args[0]] + args[3:]:
+         parser.error('%s %s does not exist.' % (name, a))
+   for a in [options.location, options.tempDir, options.outDir]:
       if not os.path.isdir(a):
          parser.error('%s is not a directory.' % a)
 def parseRegistry(caller, options):

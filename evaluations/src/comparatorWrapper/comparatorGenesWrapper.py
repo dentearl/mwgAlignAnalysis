@@ -42,9 +42,16 @@ def callEvaluation(options):
    annots = libComparator.getAnnots('genes', options)
    cmds = []
    for t in ['MRCA', 'MRCAnp', 'ROOT', 'ROOTnp']:
-      cmd = libComparator.basicCommand('comparator%sGenes.xml' % t, 'truth%s' % t, options)
+      filename = 'comparator%sGenes.xml' % t
+      if os.path.exists(os.path.join(options.outDir, filename)):
+         # these four analyses can take a long time to run, crashes should not force an entire restart,
+         # just a partial restart. This conditional allows analysis checkpointing.
+         continue
+      cmd = libComparator.basicCommand(filename + '.tmp', 'truth%s' % t, options)
       cmd.append('--bedFiles=%s' % ','.join(annots))
       cmds.append(cmd)
+      cmds.append(libComparator.moveCommand(os.path.join(options.outDir, filename + '.tmp'), 
+                                            os.path.join(options.outDir, filename)))
    libWrapper.runCommands(cmds, os.curdir)
    libWrapper.recordCommands(cmds, os.path.join(options.outDir, 'commands.txt'))
 
