@@ -89,15 +89,15 @@ class ComparisonPair:
         # TP_A / (TP_A + FN)
         # We use the TP_A since FN comes from the A->B comparison
         if (self.truePosA + self.falseNeg) == 0:
-            self.recall = -1.0
+            self.recall = float('nan')
         else:
             self.recall = float(self.truePosA) / (self.truePosA + self.falseNeg)
         if (self.truePosRegionA + self.falseNegRegion) == 0:
-            self.recallRegion = -1.0
+            self.recallRegion = float('nan')
         else:
             self.recallRegion = float(self.truePosRegionA) / (self.truePosRegionA + self.falseNegRegion)
         if (self.truePosRegionOutsideA + self.falseNegRegionOutside) == 0:
-            self.recallRegionOutside = -1.0
+            self.recallRegionOutside = float('nan')
         else:
             self.recallRegionOutside = (float(self.truePosRegionOutsideA) / 
                                         (self.truePosRegionOutsideA + self.falseNegRegionOutside))
