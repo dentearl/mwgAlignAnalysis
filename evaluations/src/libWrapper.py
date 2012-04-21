@@ -31,35 +31,39 @@ Common functions used by python wrappers for alignathon
 # THE SOFTWARE.
 ##################################################
 import os
+import sys
 import subprocess
 
 def checkOptions(options, args, parser):
    if len(args) != 5:
       parser.error('Args should contain five items: 1) location of package directory '
                    '2) predicted maf 3) registry file 4) temporary directory 5) output directory')
-   options.location= args[0]
+   options.location = args[0]
    options.predMaf = args[1]
-   options.registry= args[2]
+   options.registry = args[2]
    options.tempDir = args[3]
-   options.outDir  = args[4]
-   for a in args:
+   options.outDir = args[4]
+   for a, name in [(options.location, 'package directory'), (options.predMaf, 'predicted maf'), 
+                   (options.registry, 'registry file'), (options.tempDir, 'temporary directory'), 
+                   (options.outDir, 'output directory')]:
       if not os.path.exists(a):
-         parser.error('%s does not exist.' % a)
-   for a in [args[0]] + args[3:]:
+         parser.error('%s %s does not exist.' % (name, a))
+   for a in [options.location, options.tempDir, options.outDir]:
       if not os.path.isdir(a):
          parser.error('%s is not a directory.' % a)
-
 def parseRegistry(caller, options):
    f = open(options.registry, 'r')
    options.reg = {}
    for line in f:
       line = line.strip()
+      if line == '':
+         continue
       if line.startswith('#'):
          continue
       try:
          key, val = line.split('\t')
       except ValueError:
-         sys.stderr.write('Warning: Malformed registry file.\n')
+         sys.stderr.write('Warning: Malformed registry file. Expected to find key-value pair (tab separated).\n')
          continue
       if key in options.reg:
          raise RuntimeError('Multiple copies of one key "%s" found in registry' % key)
@@ -83,13 +87,11 @@ def parseRegistry(caller, options):
            for s in options.reg[elm]:
                if not os.path.exists(os.path.join(options.location, s)):
                    raise RuntimeError('%s file mentioned in registry not found: %s' % (elm, s))
-
 def runCommands(cmds, localTempDir, inPipes = [], outPipes = [], mode = 's', debug = False):
     """ runCommands is a wrapper function for the parallel and serial
     versions of runCommands(). mode may either be s or p.
     """
     # from libCall import runCommandsP, runCommandsS
-
     if not os.path.exists(localTempDir):
         raise ValueError('localTempDir "%s" does not exist.' % localTempDir)
     if not isinstance(cmds, list):
@@ -102,7 +104,6 @@ def runCommands(cmds, localTempDir, inPipes = [], outPipes = [], mode = 's', deb
     if mode not in ('s', 'p'):
         raise ValueError('runCommands() "mode" argument must be either '
                          's or p, not %s.' % mode)
-    
     if outPipes != []:
         if len(cmds) != len(outPipes):
             raise ValueError('runCommands() length of outPipes list %d '
@@ -115,14 +116,12 @@ def runCommands(cmds, localTempDir, inPipes = [], outPipes = [], mode = 's', deb
                              'not equal to cmds list %d.' % (len(inPipes), len(cmds)))
     else:
         inPipes = [None] * len(cmds)
-
     if mode == 's':
         # logger.info('Issuing serial commands %s %s %s.' % (str(cmds), str(inPipes), str(outPipes)))
         runCommandsS(cmds, localTempDir, inPipes = inPipes, outPipes = outPipes, debug = debug)
     else:
         # logger.info('Issuing parallel commands %s %s %s.' % (str(cmds), str(inPipes), str(outPipes)))
         runCommandsP(cmds, localTempDir, inPipes = inPipes, outPipes = outPipes, debug = debug)
-
 def runCommandsP(cmds, localTempDir, inPipes = [], outPipes = [], debug = False):
     """ runCommandsP uses the subprocess module
     to issue parallel processes from the cmds list.
@@ -159,7 +158,6 @@ def runCommandsP(cmds, localTempDir, inPipes = [], outPipes = [], debug = False)
             f.write(p.communicate(sin)[0])
             f.close()
             handleReturnCode(p.returncode, cmds[i])
-
 def runCommandsS(cmds, localTempDir, inPipes=[], outPipes=[], debug = False):
     """ runCommandsS uses the subprocess module
     to issue serial processes from the cmds list.
@@ -193,7 +191,6 @@ def runCommandsS(cmds, localTempDir, inPipes=[], outPipes=[], debug = False):
             f.write(p.communicate(sin)[0])
             f.close()
             handleReturnCode(p.returncode, cmds[i])
-
 def handleReturnCode(retcode, cmd):
     """ handleReturnCode works with the libCall functions and raises errors when
     subprocesses go bad. Includes returncodes, which can be useful for debugging.
@@ -211,10 +208,14 @@ def handleReturnCode(retcode, cmd):
         else:
             raise RuntimeError('Experienced an error while trying to execute: '
                                '%s retcode:%d' %(' '.join(cmd), retcode))
-
+def recordCommands(commands, filename):
+   """ record each command the `commands' list into filename.
+   """
+   for cmd in commands:
+      recordCommand(cmd, filename)
 def recordCommand(command, filename):
    """ records the given command to the given filename. nothing special
    """
-   f = open(filename, 'w')
+   f = open(filename, 'a')
    f.write('%s\n' % ' '.join(command))
    f.close()

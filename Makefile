@@ -12,8 +12,8 @@ export SHELLOPTS = pipefail
 # 'make analysis set=testSet location=../testPackage'
 #
 ####################
-location := $(realpath ${location})
-dirLocation := ${location:%/=%}
+packageLocation := $(abspath ${location})
+dirLocation := ${packageLocation:%/=%}
 predictionsDir := ${dirLocation}/predictions
 predictions := $(wildcard ${predictionsDir}/*.maf)
 evalBinDir := evaluations/bin

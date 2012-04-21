@@ -39,11 +39,21 @@ import os
 import sys
 
 def callEvaluation(options):
-   cmd = libComparator.basicCommand('comparatorGenes.xml', options)
-   geneAnnots = libComparator.getAnnots('genes', options)
-   cmd.append('--bedFiles=%s' % ','.join(geneAnnots))
-   libWrapper.runCommands([cmd], os.curdir)
-   libWrapper.recordCommand(cmd, os.path.join(options.outDir, 'command.txt'))
+   annots = libComparator.getAnnots('genes', options)
+   cmds = []
+   for t in ['MRCA', 'MRCAnp', 'ROOT', 'ROOTnp']:
+      filename = 'comparator%sGenes.xml' % t
+      if os.path.exists(os.path.join(options.outDir, filename)):
+         # these four analyses can take a long time to run, crashes should not force an entire restart,
+         # just a partial restart. This conditional allows analysis checkpointing.
+         continue
+      cmd = libComparator.basicCommand(filename + '.tmp', 'truth%s' % t, options)
+      cmd.append('--bedFiles=%s' % ','.join(annots))
+      cmds.append(cmd)
+      cmds.append(libComparator.moveCommand(os.path.join(options.outDir, filename + '.tmp'), 
+                                            os.path.join(options.outDir, filename)))
+   libWrapper.runCommands(cmds, os.curdir)
+   libWrapper.recordCommands(cmds, os.path.join(options.outDir, 'commands.txt'))
 
 def main():
    usage = ('usage: %prog location/ pred.maf set.reg.tab tempDir/ outDir/\n\n'
