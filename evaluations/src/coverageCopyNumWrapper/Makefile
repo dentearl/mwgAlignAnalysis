@@ -2,8 +2,8 @@ bin := ../../bin
 util := ../../util
 .PHONY := all test clean
 
-wrappers := indelDistributionWrapper.py
-utilities := indelDistributionSummarizer.py
+wrappers := coverageCopyNumWrapper.py
+utilities := 
 utilLibs := libStem.py
 binWrappers := $(foreach f,${wrappers},${bin}/$f)
 utilUtilities := $(foreach f,${utilities},${util}/$f)

@@ -4,7 +4,7 @@ bin:= ../bin
 # MAKE EDITS IN THIS BOX
 # place the name of your directory at the end of
 # the 'evaluations' list
-evaluations := comparatorWrapper indelDistributionWrapper toyExamples
+evaluations := comparatorWrapper coverageCopyNumWrapper toyExamples
 libraries := libWrapper.py
 
 # DO NOT EDIT BELOW THIS LINE
