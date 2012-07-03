@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python2.7
 """ 
 comparatorWrapper.py
 dent earl, dearl (a) soe ucsc edu

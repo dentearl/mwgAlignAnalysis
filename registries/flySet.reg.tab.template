@@ -5,7 +5,7 @@
 # package set directory.
 # Key	Value
 ####################
-evaluations	indelDistributionWrapper.py
+evaluations	coverageCopyNumWrapper.py
 species	dm, droSim1, droSec1, droYak, droEre2, droAna3, dp4, droPer1, droWil1, droVir3, droMoj3, droGri2, anaGam1, apiMel3, triCas2, droBia, droBip, droEle, droFic, droKik, droTak, droRho, droEug
 tree	((droGri2:0.183954,droVir3:0.093575):0.000000,(droMoj3:0.110563,((((droBip:0.034265,droAna3:0.042476):0.121927,(droKik:0.097564,((droFic:0.109823,(((dm3:0.023047,(droSim1:0.015485,droSec1:0.015184):0.013850):0.016088,(droYak2:0.026909,droEre2:0.029818):0.008929):0.047596,droEug:0.102473,(droBia:0.069103,droTak:0.060723):0.015855):0.005098):0.010453):0.008044,(droEle:0.062413,droRho:0.051516):0.015405):0.046129):0.018695):0.078585,(droPer1:0.007065,dp4:0.005900):0.185269):0.068212,droWil1:0.259408):0.097093):0.035250);
 ####################

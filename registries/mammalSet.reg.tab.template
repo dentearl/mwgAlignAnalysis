@@ -5,7 +5,7 @@
 # package set directory.
 # Key	Value
 ####################
-evaluations	comparatorWrapper.py, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py
+evaluations	comparatorWrapper.py, comparatorGenesWrapper.py, comparatorRepeatsWrapper.py, comparatorNeutralWrapper.py, coverageCopyNumWrapper.py
 truthMRCA	truths/ancestor.maf
 truthROOT	truths/burnin.maf
 truthMRCAnp	truths/ancestor.noparalogies.maf

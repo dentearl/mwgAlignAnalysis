@@ -4,7 +4,7 @@ bin:= ../bin
 # MAKE EDITS IN THIS BOX
 # place the name of your directory at the end of
 # the 'evaluations' list
-evaluations := comparatorWrapper indelDistributionWrapper toyExamples
+evaluations := comparatorWrapper coverageCopyNumWrapper toyExamples
 libraries := libWrapper.py
 
 # DO NOT EDIT BELOW THIS LINE
@@ -20,7 +20,7 @@ all : ${libraries:%=${bin}/lib/%} ${evaluations:%=%.all}
 test : evals.tested ${evaluations:%=%.test}
 
 evals.tested:
-	python2.6 ./test.evaluations.py -v
+	python2.7 ./test.evaluations.py -v
 
 %.test: 
 	cd $* && make test

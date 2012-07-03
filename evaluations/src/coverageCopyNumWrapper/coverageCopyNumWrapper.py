@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """ 
-indelDistributionWrapper.py
+coverageCopyNumWrapper.py
 dent earl, dearl (a) soe ucsc edu
 16 November 2011
 
 Simple wrapper to perform an evaluation
-using mafIndelDistribution.py 
+using the mafCoveragePickle*.py tools
 """
 ##################################################
 # Copyright (C) 2009-2011 by
@@ -37,7 +37,7 @@ import os
 import sys
 
 def callEvaluation(options):
-   pickle = os.path.join(options.outDir, 'mafCoverage.pickle')
+   pickle = os.path.join(options.outDir, 'mafCoverageCopyNum.pickle')
 
    # create mafCoveragePickle
    cmd = ['mafCoveragePickleCreator.py']
@@ -47,10 +47,9 @@ def callEvaluation(options):
    libWrapper.runCommands([cmd], os.curdir)
    
    # perform gap analysis:
-   cmd = ['mafCoveragePickleGapAnalysis.py']
+   cmd = ['mafCoveragePickleAnalysis.py']
    cmd.append('--pickle=%s' % pickle)
-   cmd.append('--outfile=%s' % os.path.join(options.outDir, 'indelAndCoverageSummary.xml'))
-   cmd.append('--noEdges')
+   cmd.append('--outfile=%s' % os.path.join(options.outDir, 'coverageCopyNumSummary.xml'))
    libWrapper.runCommands([cmd], os.curdir)
 
 def main():
