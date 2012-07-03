@@ -20,7 +20,7 @@ all : ${libraries:%=${bin}/lib/%} ${evaluations:%=%.all}
 test : evals.tested ${evaluations:%=%.test}
 
 evals.tested:
-	python2.6 ./test.evaluations.py -v
+	python2.7 ./test.evaluations.py -v
 
 %.test: 
 	cd $* && make test

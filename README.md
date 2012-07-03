@@ -9,12 +9,12 @@ The [Alignathon] (http://compbio.soe.ucsc.edu/alignathon/) is a collaborative pr
 
 ## Dependencies
 * A Linux system to run the analysis pipeline
-* Python 2.6 &le; version &lt; 3.0
+* Python 2.7
 * [mafTools] (https://github.com/dentearl/maftools/)
 
 ## Installation
 1. Install dependencies.
-2. <code>$ git@github.com:dentearl/mwgAlignAnalysis.git</code>
+2. <code>$ git clone git@github.com:dentearl/mwgAlignAnalysis.git</code>
 3. <code>$ cd mwgAlignAnalysis && make</code>
 
 ## Use
@@ -22,4 +22,4 @@ After downloading a package from the [Alignathon website] (http://compbio.soe.uc
 
 <code>$ make analysis location=/path/to/package set=testSet</code>
 
-where <code>location</code> is the path to the package and <code>set</code> is one of the prefixes from the registries directory, i.e. flySet, mammalSet, primateSet or testSet. The Makefile can be run in parallel with <code>-j [integer]</code> which allows  the evaluations in an analysis to be run in parallel.
+where <code>location</code> is the path to the package and <code>set</code> is one of the prefixes from the registries directory, i.e. <code>flySet</code>, <code>mammalSet</code>, <code>primateSet</code> or <code>testSet</code>. The Makefile can be run in parallel with <code>-j [integer]</code> which allows  the evaluations in an analysis to be run in parallel.
