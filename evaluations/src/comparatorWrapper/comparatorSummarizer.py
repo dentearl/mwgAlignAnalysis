@@ -65,7 +65,6 @@ class ComparisonPair:
         self.niceNames =  '-'.join(names)
         if len(names) == 1:
             self.niceNames = 'self-%s' % names[0]
-
     def calcPrecision(self):
         # Precision is calculated as 
         # TP_B / (TP_B + FP)
@@ -83,7 +82,6 @@ class ComparisonPair:
         else:
             self.precisionRegionOutside = (float(self.truePosRegionOutsideB) / 
                                            (self.truePosRegionOutsideB + self.falsePosRegionOutside))
-
     def calcRecall(self):
         # Recall is calculated as 
         # TP_A / (TP_A + FN)
@@ -101,25 +99,22 @@ class ComparisonPair:
         else:
             self.recallRegionOutside = (float(self.truePosRegionOutsideA) / 
                                         (self.truePosRegionOutsideA + self.falseNegRegionOutside))
-
 def initOptions(parser):
     parser.add_option('--xml', dest = 'xml', 
                       help = 'location of mafComparator output xml to summarize.')
-
 def checkOptions(options, args, parser):
     if options.xml is None:
         parser.error('specify --xml')
     if not os.path.exists(options.xml):
         parser.error('--xml %s does not exist' % options.xml)
-
 def addPairData(pairs, homTests, falsePosMode = False):
     """ given the dict `pairs' and a part of the xml tree `homTests',
     addPairData() walks the tree to add data to the pairs dict.
     falsePosMode vs truePosMode:
     the first homology test in the mafComparator output is A->B and the 
-    results of this comparison will be truePositives.
+    results of this comparison will be truePositives(A) and falseNegatives(A).
     the second homology test in the mC output is B->A and the results
-    of this comparison can be false positives (falsePosMode).
+    of this comparison will be truePositives(B) and falsePositives(B) (this is falsePosMode).
     """
     hpTests = homTests.find('homologyPairTests')
     tests = hpTests.findall('homologyTest')
@@ -159,7 +154,6 @@ def addPairData(pairs, homTests, falsePosMode = False):
                 p.falseNegRegion += int(t.find('aggregateResults').find('both').attrib['totalFalse'])
                 p.truePosRegionOutsideA += int(t.find('aggregateResults').find('neither').attrib['totalTrue'])
                 p.falseNegRegionOutside += int(t.find('aggregateResults').find('neither').attrib['totalFalse'])
-
 def findPair(seqA, seqB, pairs):
     # Check to see if the pair (seqA, seqB) is stored in pairs. Return None if not, return the pair if so.
     if '%s-%s' % (seqA, seqB) in pairs:
@@ -171,7 +165,6 @@ def findPair(seqA, seqB, pairs):
         #    raise RuntimeError('Duplicate pair found in `pairs\' dict: %s-%s' % (seqA, seqB))
         return pairs['%s-%s' % (seqB, seqA)]
     return None
-
 def reportPairs(pairs, options):
     print ''
     sortedPairs = sorted(pairs, key = lambda x: pairs[x].niceNames)
@@ -214,7 +207,6 @@ def reportPairs(pairs, options):
                    fRegOutStr,
                    p.truePosRegionOutsideA, p.truePosRegionOutsideB, 
                    p.falsePosRegionOutside, p.falseNegRegionOutside))
-
 def summarize(options):
     """ summarize() summizes the information contained in file stored in options.xml
     """
@@ -227,7 +219,6 @@ def summarize(options):
     pairs = {}
     addPairData(pairs, homTests[0])
     addPairData(pairs, homTests[1], falsePosMode = True)
-    
     if isRegionMode(pairs):
         # if a BED was used by mafComparator then the xml will be in Region mode
         suffix = 'Region'
@@ -253,7 +244,6 @@ def summarize(options):
     truePosSelfB = getItem(pairs, 'truePos' + suffix + 'B', True)
     falsePosSelf = getItem(pairs, 'falsePos' + suffix, True)
     falseNegSelf = getItem(pairs, 'falseNeg' + suffix, True)
-    
     if (truePosB + falsePos) == 0:
         precision = float('nan')
     else:
@@ -270,7 +260,6 @@ def summarize(options):
         recallSelf = float('nan')
     else:
         recallSelf = float(truePosSelfA) / (truePosSelfA + falseNegSelf)
-
     print '%35s %10s %10s %10s %9s %9s %9s %9s' % ('', 'Precision', 'Recall', 'F-score', 'TP (A)', 'TP (B)', 'FP (B)', 'FN (A)')
     if isRegionMode(pairs):
         sanityCheckRegionMode(truePosA, truePosB, falsePos, falseNeg, 
@@ -304,7 +293,6 @@ def summarize(options):
                                                              2 * ((precisionSelf * recallSelf) / 
                                                                   (precisionSelf + recallSelf)),
                                                              truePosSelfA, truePosSelfB, falsePosSelf, falseNegSelf)
-    
     reportPairs(pairs, options)
 def sanityCheckRegionMode(truePosA, truePosB, falsePos, falseNeg, 
                           truePosOutA, truePosOutB, falsePosOut, falseNegOut, 
@@ -407,7 +395,6 @@ def isRegionMode(pairs):
         p = pairs[pair]
         if p.truePosRegionA > 0 or p.truePosRegionB > 0 or p.falsePosRegion > 0 or p.falseNegRegion > 0:
             return True
-
 def getItem(pairs, item, alignSelf):
     ans = 0
     for pair in pairs:
@@ -417,7 +404,6 @@ def getItem(pairs, item, alignSelf):
                 continue
         ans += p.__dict__[item]
     return ans
-
 def main():
     usage = ('usage: %prog \n\n'
              '%prog \n')
@@ -425,9 +411,7 @@ def main():
     initOptions(parser)
     options, args = parser.parse_args()
     checkOptions(options, args, parser)
-    
     summarize(options)
     
 if __name__ == '__main__':
     main()
-
