@@ -96,11 +96,11 @@ def basicCommand(filename, truth, options):
    cmd.append('--samples=%d' % (1 * 10**7)) # 10,000,000
    if 'mammals' in options.outDir.split('-')[1].split('.'):
       test = 'mammals'
-      cmd.append('--wigglePairs=simHuman*,simCow*,simHuman*,simDog*,simHuman*,simMouse*,simHuman*,simRat*')
+      cmd.append('--wigglePairs=simHuman*:simCow*,simHuman*:simDog*,simHuman*:simMouse*,simHuman*:simRat*,simMouse*:simCow*,simMouse*:simDog*,simMouse*:simRat*')
       cmd.append('--legitSequences=%s' % mammalSequences)
    else:
       test = 'primates'
-      cmd.append('--wigglePairs=simHuman*,simChimp*,simHuman*,simGorilla*,simHuman*,simOrang*')
+      cmd.append('--wigglePairs=simHuman*:simChimp*,simHuman*:simGorilla*,simHuman*:simOrang*,simOrang*:simChimp*,simOrang*:simGorilla*')
       cmd.append('--legitSequences=%s' % primateSequences)
    key = '%s.%s' % (test, maf1)
    if key in numberOfPairs and maf2 in numberOfPairs:
