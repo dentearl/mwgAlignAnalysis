@@ -14,7 +14,7 @@ The [Alignathon] (http://compbio.soe.ucsc.edu/alignathon/) is a collaborative pr
 
 ## Installation
 1. Install dependencies.
-2. <code>$ git clone git@github.com:dentearl/mwgAlignAnalysis.git</code>
+2. <code>$ git clone https://github.com/dentearl/mwgAlignAnalysis.git</code>
 3. <code>$ cd mwgAlignAnalysis && make</code>
 
 ## Use
